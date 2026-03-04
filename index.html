@@ -196,6 +196,26 @@ th:first-child, td:first-child {
         .last-paid-cell { font-weight: 600; color: #74b9ff; font-size: 0.8rem; white-space: nowrap; }
         .last-paid-cell.done { color: #00b894; font-weight: 800; }
 
+        /* ✅ 장부 입력 자동완성 */
+        .autocomplete-wrap { position: relative; }
+        .autocomplete-list {
+            position: absolute; top: 100%; left: 0; right: 0; z-index: 9999;
+            background: #fff; border: 1px solid #dfe6e9; border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12); max-height: 200px;
+            overflow-y: auto; display: none;
+        }
+        .autocomplete-list.show { display: block; }
+        .autocomplete-item {
+            padding: 10px 14px; cursor: pointer; font-size: 0.9rem;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .autocomplete-item:last-child { border-bottom: none; }
+        .autocomplete-item:hover, .autocomplete-item.selected { background: #f0fffe; }
+        .autocomplete-item .ac-name { font-weight: 700; }
+        .autocomplete-item .ac-fee { font-size: 0.78rem; color: #00b894; font-weight: 600; }
+
+        
         /* Unpaid & Calendar & Receipts */
         .unpaid-card { background: white; border-radius: 16px; padding: 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #f1f2f6; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
         .u-top { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
@@ -477,7 +497,15 @@ th:first-child, td:first-child {
                 <select id="tCat" style="flex:1;"></select>
                 <input type="number" id="tAmt" placeholder="금액" style="flex:1; font-weight:bold;">
             </div>
-            <input type="text" id="tDesc" placeholder="내용 (예: 홍길동 1~6월 회비)">
+            <div class="autocomplete-wrap">
+    <input type="text" id="tDesc" placeholder="내용 (예: 홍길동 1~6월 회비)" autocomplete="off" oninput="onDescInput()" onkeydown="onDescKeydown(event)">
+    <div class="autocomplete-list" id="acList"></div>
+</div>
+<!-- ✅ 빠른 월 선택 버튼 (월회비 입력 시 표시) -->
+<div id="quickMonthArea" style="display:none; margin-bottom:6px;">
+    <div style="font-size:0.75rem; color:#636e72; margin-bottom:5px;">📅 납부 월 빠른 선택</div>
+    <div style="display:flex; flex-wrap:wrap; gap:5px;" id="quickMonthBtns"></div>
+</div>
             <button class="btn-main" id="btnAdd" onclick="addTrans()">입력 완료</button>
         </div>
 
@@ -886,6 +914,27 @@ th:first-child, td:first-child {
     <label style="font-size:0.85rem; font-weight:bold; color:#2d3436;">🏦 입금 계좌 정보 (은행 계좌 예금주)</label>
     <input type="text" id="setting_bankAccount" placeholder="예: 카카오뱅크 3333-00-0000000 홍길동" style="margin-bottom:0;">
     <p style="font-size:0.75rem; color:#999; margin-top:5px;">* 입력하면 메인화면 상단에 표시됩니다.</p>
+
+<hr style="border:none; border-top:1px dashed #ccc; margin:15px 0;">
+<h3 style="margin:0 0 10px 0;">📩 문자 알림(작성창 열기)</h3>
+
+<label style="display:flex; align-items:center; gap:8px; font-weight:bold;">
+  <input type="checkbox" id="sms_enabled" style="width:18px; height:18px;">
+  회비/찬조 장부 등록 시, 해당 회원에게 문자 작성창 자동 열기
+</label>
+<div style="font-size:0.75rem; color:#777; margin-top:6px; line-height:1.3;">
+  * 자동 “발송”이 아니라, <b>휴대폰 문자앱</b>에서 내용 확인 후 <b>직접 보내는</b> 방식입니다.
+</div>
+
+<label style="font-size:0.8rem; color:#666; margin-top:10px; display:block;">회비 문자 템플릿</label>
+<textarea id="sms_tpl_dues" style="width:100%; height:90px; padding:10px; border-radius:12px; border:1px solid #ddd;"></textarea>
+
+<label style="font-size:0.8rem; color:#666; margin-top:10px; display:block;">찬조 문자 템플릿</label>
+<textarea id="sms_tpl_don" style="width:100%; height:90px; padding:10px; border-radius:12px; border:1px solid #ddd;"></textarea>
+
+<div style="font-size:0.75rem; color:#999; margin-top:8px;">
+  사용가능 변수: {NAME}, {MONTHS}, {AMOUNT}
+</div>
 </div>
                 <button class="btn-main" onclick="saveFeeSettings()">저장</button>
                 <button class="btn-main" style="background:#eee; color:#333;" onclick="document.getElementById('feeSettingsModal').style.display='none'">취소</button>
@@ -927,7 +976,7 @@ th:first-child, td:first-child {
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, set, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getDatabase, ref, set, get, remove, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     const firebaseConfig = {
       apiKey: "AIzaSyBDdJpn7gkb_8mnHaQpp3olHuE_Un_Aj7A",
@@ -1051,21 +1100,20 @@ window.onload = () => {
                 overlay.style.display = 'none';
                 console.warn('데이터 로딩 시간 초과. 강제 진입합니다.');
             }
-        }, 10000); // 10초 타임아웃
+        }, 5000); // 5초 타임아웃
 
-        // Firebase 데이터 불러오기
+        // Firebase 데이터 불러오기 (get() 1회 방식 - 안정적)
         const clubRef = ref(db, BASE_PATH);
-        onValue(clubRef, (snapshot) => {
+        get(clubRef).then((snapshot) => {
             document.getElementById('loadingOverlay').style.display = 'none'; // 로딩 해제
             const data = snapshot.val();
             if (data) {
                 window.trans = data.trans || [];
-               // 'members_acc'라는 별도 명단이 있으면 그걸 쓰고, 없으면 기존 'members'를 가져옵니다(최초 1회 복사)
-window.members = data.members_acc || data.members || [];
+                // 'members_acc'라는 별도 명단이 있으면 그걸 쓰고, 없으면 기존 'members'를 가져옵니다(최초 1회 복사)
+                window.members = data.members_acc || data.members || [];
                 window.receipts = data.receipts || [];
                 window.events = data.events || [];
                 window.settings = data.settings || {};
-                
                 if(data.auditState) window.auditState = data.auditState;
             } else {
                 saveToFirebase(); // 데이터 없으면 초기화
@@ -1076,7 +1124,7 @@ window.members = data.members_acc || data.members || [];
             }
             setCategories();
             renderAll();
-        }, (error) => {
+        }).catch((error) => {
             // 에러 발생 시에도 로딩창 닫기
             document.getElementById('loadingOverlay').style.display = 'none';
             alert("데이터를 불러오는 중 오류가 발생했습니다: " + error.message);
@@ -1177,6 +1225,8 @@ window.saveAndExit = () => {
                 if(!window.settings) window.settings = {};
                 window.settings.adminPwd = newPw;
                 saveToFirebase();
+        // ✅ 문자 작성창 자동 열기 (설정 ON + 월회비/찬조금 수입일 때)
+        maybeComposeSmsForTrans({ type, cat, amt, desc }).catch(console.warn);
                 alert("비밀번호가 변경되었습니다.");
             } else alert("비밀번호가 일치하지 않습니다.");
         }
@@ -1221,9 +1271,224 @@ window.saveAndExit = () => {
         const el = document.getElementById('tCat');
         el.innerHTML = '';
         CATS[type].forEach(c => { const op = document.createElement('option'); op.value=c; op.innerText=c; el.appendChild(op); });
+
+        // ✅ 카테고리 변경 시 자동완성/빠른월 UI 초기화
+        const ac = document.getElementById('acList');
+        if(ac) ac.classList.remove('show');
+        const q = document.getElementById('quickMonthArea');
+        if(q) q.style.display = 'none';
+
+        // ✅ tCat 변경 시 빠른 월 영역 재갱신
+        el.onchange = () => {
+            const desc = document.getElementById('tDesc').value.trim();
+            const m = (window.members||[]).find(x => desc.startsWith(x.name));
+            if (m) updateQuickMonthArea(m.name);
+            else if(q) q.style.display = 'none';
+        };
     }
 
-    window.addTrans = () => {
+    
+// =========================
+// 📩 문자 작성창 자동 열기 (휴대폰에서 확인 후 발송)
+// =========================
+function getSmsSettings(){
+    if(!window.settings) window.settings = {};
+    if(!window.settings.sms){
+        window.settings.sms = {
+            enabled: false,
+            templateDues: "[진례모던 피클볼 클럽]\n{NAME}님 {MONTHS} 회비 {AMOUNT} 납부 확인되었습니다. 감사합니다! 🏓\n- 진례모던 피클볼 -",
+            templateDonation: "[진례모던 피클볼 클럽]\n{NAME}님 찬조 {AMOUNT} 입금 감사드립니다. 🙏\n회원님 덕분에 운영에 큰 힘이 됩니다.\n- 진례모던 피클볼 -"
+        };
+    }
+    return window.settings.sms;
+}
+
+function normalizePhone(p){
+    if(!p) return "";
+    return String(p).replace(/[^0-9]/g,'').trim();
+}
+
+function formatKrw(amt){
+    const n = Number(amt||0);
+    return n.toLocaleString() + "원";
+}
+
+function fillTemplate(tpl, vars){
+    return String(tpl||"")
+        .replaceAll("{NAME}", vars.NAME ?? "")
+        .replaceAll("{MONTHS}", vars.MONTHS ?? "")
+        .replaceAll("{AMOUNT}", vars.AMOUNT ?? "");
+}
+
+// desc에 포함된 회원 이름으로 회원 찾기 (긴 이름 우선)
+function findMemberFromDesc(desc){
+    if(!desc) return null;
+    const sorted = [...(window.members||[])].sort((a,b)=> (b.name||"").length - (a.name||"").length);
+    return sorted.find(m => m && m.name && desc.includes(m.name)) || null;
+}
+
+// "1~3월" / "1-3월" / "2월" 등 추출
+function parseMonthsFromDesc(desc){
+    if(!desc) return "";
+    const range = desc.match(/(\d{1,2})\s*[~-]\s*(\d{1,2})\s*월/);
+    if(range){
+        const s = parseInt(range[1],10), e = parseInt(range[2],10);
+        if(!isNaN(s) && !isNaN(e)) return `${s}~${e}월`;
+    }
+    const single = desc.match(/(\d{1,2})\s*월/);
+    if(single){
+        const m = parseInt(single[1],10);
+        if(!isNaN(m)) return `${m}월`;
+    }
+    return "";
+}
+
+// 휴대폰 문자앱 작성창 열기 (OS별 쿼리 구분)
+function openSmsComposer(to, body){
+    const phone = normalizePhone(to);
+    if(!phone) return alert("회원 전화번호가 없습니다. (회원 정보에 연락처를 입력해 주세요)");
+    const msg = String(body||"");
+    const encoded = encodeURIComponent(msg);
+
+    const ua = navigator.userAgent || "";
+    const isIOS = /iPad|iPhone|iPod/.test(ua);
+    const sep = isIOS ? "&" : "?";
+    const url = `sms:${phone}${sep}body=${encoded}`;
+
+    try{
+        window.location.href = url;
+    }catch(e){
+        if(navigator.clipboard){
+            navigator.clipboard.writeText(msg).catch(()=>{});
+        }
+        alert("문자 작성창을 열 수 없어 내용을 클립보드에 복사했습니다. 문자앱에 붙여넣어 보내주세요.");
+    }
+}
+
+async function maybeComposeSmsForTrans({ type, cat, amt, desc }){
+    const sms = getSmsSettings();
+    if(!sms.enabled) return;
+    if(type !== "income") return;
+    if(cat !== "월회비" && cat !== "찬조금") return;
+
+    const member = findMemberFromDesc(desc);
+    if(!member) return;
+
+    const phone = normalizePhone(member.phone);
+    if(!phone) return;
+
+    const months = (cat === "월회비") ? (parseMonthsFromDesc(desc) || "회비") : "";
+    const vars = { NAME: member.name, MONTHS: months, AMOUNT: formatKrw(amt) };
+
+    const body = (cat === "찬조금")
+        ? fillTemplate(sms.templateDonation, vars)
+        : fillTemplate(sms.templateDues, vars);
+
+    openSmsComposer(phone, body);
+}
+
+// =========================
+// ✅ 장부 자동완성 & 빠른 월 선택
+// =========================
+let acSelectedIdx = -1;
+
+window.onDescInput = () => {
+    const cat = document.getElementById('tCat').value;
+    const type = document.getElementById('tType').value;
+    const val = document.getElementById('tDesc').value;
+    const list = document.getElementById('acList');
+    if(!list) return;
+    acSelectedIdx = -1;
+
+    // 월회비/가입비일 때만 자동완성
+    if (type !== 'income' || !['월회비','가입비'].includes(cat)) { list.classList.remove('show'); return; }
+
+    const filtered = (window.members||[]).filter(m =>
+        !EXCLUDED_STATUSES.includes(m.status) && m.name && m.name.includes(val.trim())
+    ).slice(0, 8);
+
+    if (!val.trim() || filtered.length === 0) { list.classList.remove('show'); return; }
+
+    list.innerHTML = filtered.map((m, i) => {
+        const fee = currentFees[m.status] || 0;
+        const sums = getMemberSums(m.name);
+        const unpaidInfo = getUnpaidInfo(m);
+        const paidMonths = (m.paid || []).filter(Boolean).length;
+        const unpaidMonthsText = unpaidInfo.months.length > 0 ? `미납: ${unpaidInfo.months.join(', ')}` : '미납 없음';
+        return `<div class="autocomplete-item" data-name="${m.name}" data-fee="${fee}" onmousedown="selectAcItem(this)">
+            <div style="display:flex; flex-direction:column; gap:2px; flex:1;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span class="ac-name">${m.name}</span>
+                    <span class="ac-fee">${m.status} · 월 ${fee.toLocaleString()}원</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:0.72rem; color:#636e72;">
+                    <span>납부 <b style="color:#0984e3;">${sums.dues.toLocaleString()}원</b> (${paidMonths}개월)</span>
+                    <span style="color:${unpaidInfo.months.length > 0 ? '#d63031' : '#00b894'};">${unpaidMonthsText}</span>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+    list.classList.add('show');
+};
+
+window.selectAcItem = (el) => {
+    const name = el.dataset.name;
+    const fee = parseInt(el.dataset.fee);
+    document.getElementById('tDesc').value = name + ' ';
+    document.getElementById('acList').classList.remove('show');
+    // ✅ 월회비 금액 자동 입력
+    if (!isNaN(fee) && fee > 0) document.getElementById('tAmt').value = fee;
+    updateQuickMonthArea(name);
+    document.getElementById('tDesc').focus();
+};
+
+window.onDescKeydown = (e) => {
+    const items = document.querySelectorAll('#acList .autocomplete-item');
+    if (!items.length) return;
+    if (e.key === 'ArrowDown') { acSelectedIdx = Math.min(acSelectedIdx+1, items.length-1); }
+    else if (e.key === 'ArrowUp') { acSelectedIdx = Math.max(acSelectedIdx-1, 0); }
+    else if (e.key === 'Enter' && acSelectedIdx >= 0) { e.preventDefault(); items[acSelectedIdx].dispatchEvent(new MouseEvent('mousedown')); return; }
+    else { return; }
+    items.forEach((el,i) => el.classList.toggle('selected', i===acSelectedIdx));
+};
+
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.autocomplete-wrap')) {
+        const list = document.getElementById('acList');
+        if(list) list.classList.remove('show');
+    }
+});
+
+function updateQuickMonthArea(memberName) {
+    const cat = document.getElementById('tCat').value;
+    const area = document.getElementById('quickMonthArea');
+    const btnsDiv = document.getElementById('quickMonthBtns');
+    if (!area || !btnsDiv) return;
+    if (cat !== '월회비' || !memberName) { area.style.display = 'none'; return; }
+
+    const m = (window.members||[]).find(x => x.name === memberName);
+    if (!m) { area.style.display = 'none'; return; }
+
+    const nowIdx = new Date().getMonth();
+    btnsDiv.innerHTML = '';
+    for (let i = 0; i <= nowIdx; i++) {
+        const paid = m.paid && m.paid[i];
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.style.cssText = `padding:5px 10px; border-radius:8px; border:1px solid ${paid?'#00b894':'#dfe6e9'}; background:${paid?'#e8faf7':'#fff'}; color:${paid?'#00b894':'#2d3436'}; font-size:0.78rem; font-weight:${paid?'700':'400'}; cursor:pointer;`;
+        btn.innerHTML = `${i+1}월${paid?' ✓':''}`;
+        if (!paid) {
+            btn.onclick = () => {
+                document.getElementById('tDesc').value = `${memberName} ${i+1}월 회비`;
+                updateQuickMonthArea(memberName);
+            };
+        }
+        btnsDiv.appendChild(btn);
+    }
+    area.style.display = 'block';
+}
+
+window.addTrans = () => {
         if(!window.isAdmin) return alert('관리자만 입력 가능합니다.');
         const date = document.getElementById('tDate').value;
         const type = document.getElementById('tType').value;
@@ -1724,6 +1989,11 @@ window.saveFeeSettings = () => {
         if(!window.isAdmin) return;
         const newFees = { ...currentFees };
         newFees['남성'] = parseInt(document.getElementById('fee_reg').value);
+        // 문자 설정 불러오기
+        const sms = getSmsSettings();
+        document.getElementById('sms_enabled').checked = !!sms.enabled;
+        document.getElementById('sms_tpl_dues').value = sms.templateDues;
+        document.getElementById('sms_tpl_don').value = sms.templateDonation;
         newFees['여성'] = parseInt(document.getElementById('fee_fem').value);
         newFees['부부(남)'] = parseInt(document.getElementById('fee_cpl_m').value);
         newFees['부부(여)'] = parseInt(document.getElementById('fee_cpl_f').value);
@@ -1734,6 +2004,13 @@ window.saveFeeSettings = () => {
         
         // ▼▼▼ [추가된 부분] 계좌번호 저장하기 ▼▼▼
         window.settings.bankAccount = document.getElementById('setting_bankAccount').value;
+
+        // 문자 설정 저장
+
+        sms.enabled = document.getElementById('sms_enabled').checked;
+        sms.templateDues = document.getElementById('sms_tpl_dues').value || sms.templateDues;
+        sms.templateDonation = document.getElementById('sms_tpl_don').value || sms.templateDonation;
+        window.settings.sms = sms;
 
         saveToFirebase(); 
         document.getElementById('feeSettingsModal').style.display='none'; 
