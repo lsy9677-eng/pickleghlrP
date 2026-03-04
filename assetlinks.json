@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "dev.workers.lsy9677.red_poetry_976c.twa",
+    "sha256_cert_fingerprints": ["AD:DB:B5:67:AC:8B:F6:6E:FC:0C:B1:88:25:1A:87:3C:96:34:0A:95:DC:6D:B5:8B:FB:60:5D:99:2D:0E:82:F0"]
+  }
+}]
