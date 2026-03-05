@@ -1341,6 +1341,16 @@ function normalizePhone(p){
     return String(p).replace(/[^0-9]/g,'').trim();
 }
 
+function formatPhoneKR(input){
+    const p = String(input||'').replace(/[^0-9]/g,'').trim();
+    if(!p) return '';
+    if(p.length === 11 && p.startsWith('010')) return p.replace(/(010)(\d{4})(\d{4})/, '$1-$2-$3');
+    if(p.length === 10 && p.startsWith('01')) return p.replace(/(01\d)(\d{3})(\d{4})/, '$1-$2-$3');
+    if(p.length === 10 && p.startsWith('0')) return p.replace(/(0\d{2})(\d{3})(\d{4})/, '$1-$2-$3');
+    if(p.length === 11 && p.startsWith('0')) return p.replace(/(0\d{2})(\d{4})(\d{4})/, '$1-$2-$3');
+    return p;
+}
+
 function formatKrw(amt){
     const n = Number(amt||0);
     return n.toLocaleString() + "원";
@@ -1408,7 +1418,12 @@ async function maybeComposeSmsForTrans({ type, cat, amt, desc }){
     if(!member) return;
 
     const phone = normalizePhone(member.phone);
-    if(!phone) return;
+    if(!phone) {
+        alert(`📵 ${member.name} 회원의 전화번호가 없습니다.\n\n회원 정보에서 연락처를 저장하면 회비 등록 시 문자창이 자동으로 열립니다.`);
+        try { goTab('members'); } catch(e) {}
+        try { openModal(String(member.id||''), String(member.name||'')); } catch(e) {}
+        return;
+    }
 
     const months = (cat === "월회비") ? (parseMonthsFromDesc(desc) || "회비") : "";
     const vars = { NAME: member.name, MONTHS: months, AMOUNT: formatKrw(amt) };
@@ -1448,11 +1463,13 @@ window.onDescInput = () => {
         const unpaidInfo = getUnpaidInfo(m);
         const paidMonths = (m.paid || []).filter(Boolean).length;
         const unpaidMonthsText = unpaidInfo.months.length > 0 ? `미납: ${unpaidInfo.months.join(', ')}` : '미납 없음';
+        const hasPhone = !!normalizePhone(m.phone);
+        const phoneBadge = hasPhone ? '' : `<span style="font-size:0.7rem; font-weight:800; color:#d63031; background:#fff0f1; border:1px solid #ffcdd2; padding:2px 8px; border-radius:999px;">📵 번호없음</span>`;
         return `<div class="autocomplete-item" data-name="${m.name}" data-fee="${fee}" onmousedown="selectAcItem(this)">
             <div style="display:flex; flex-direction:column; gap:2px; flex:1;">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <span class="ac-name">${m.name}</span>
-                    <span class="ac-fee">${m.status} · 월 ${fee.toLocaleString()}원</span>
+                    <span class="ac-fee">${m.status} · 월 ${fee.toLocaleString()}원</span> ${phoneBadge}
                 </div>
                 <div style="display:flex; justify-content:space-between; font-size:0.72rem; color:#636e72;">
                     <span>납부 <b style="color:#0984e3;">${sums.dues.toLocaleString()}원</b> (${paidMonths}개월)</span>
@@ -3115,7 +3132,8 @@ window.uploadReceipt = async () => {
         const name = document.getElementById('editName').value; 
         const birthday = document.getElementById('editBirthday').value;        
         const role = document.getElementById('editRole').value; 
-        const phone = document.getElementById('editPhone').value; 
+        const rawPhone = document.getElementById('editPhone').value; 
+        const phone = formatPhoneKR(rawPhone);
         const status = document.getElementById('editStatus').value; 
         const spouse = document.getElementById('editSpouse').value; 
         // ▼▼▼ [추가] 가입일 값 가져오기 ▼▼▼
