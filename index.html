@@ -208,10 +208,11 @@ th:first-child, td:first-child {
         /* ✅ 장부 입력 자동완성 */
         .autocomplete-wrap { position: relative; }
         .autocomplete-list {
-            position: absolute; top: 100%; left: 0; right: 0; z-index: 9999;
+            /* 2026-09-23: 자동완성 목록이 다음 카드에 가려지지 않도록 입력 영역 안에서 펼쳐 표시 */
+            position: relative; top: auto; left: auto; right: auto; z-index: 5;
             background: #fff; border: 1px solid #dfe6e9; border-radius: 10px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12); max-height: 200px;
-            overflow-y: auto; display: none;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12); max-height: none;
+            overflow: visible; display: none; margin-top: 6px;
         }
         .autocomplete-list.show { display: block; }
         .autocomplete-item {
@@ -223,6 +224,42 @@ th:first-child, td:first-child {
         .autocomplete-item:hover, .autocomplete-item.selected { background: #f0fffe; }
         .autocomplete-item .ac-name { font-weight: 700; }
         .autocomplete-item .ac-fee { font-size: 0.78rem; color: #00b894; font-weight: 600; }
+        .autocomplete-history-meta { font-size:0.72rem; color:#636e72; margin-top:3px; display:flex; gap:8px; flex-wrap:wrap; }
+        .autocomplete-history-badge { font-size:0.68rem; padding:2px 7px; border-radius:999px; background:#f1f3f5; color:#636e72; font-weight:700; }
+        .autocomplete-history-amount { color:#0984e3; font-weight:800; white-space:nowrap; }
+        .autocomplete-history-expense .autocomplete-history-amount { color:#d63031; }
+        .autocomplete-recent-title { padding:9px 12px 6px; font-size:.72rem; color:#636e72; font-weight:800; background:#f8f9fa; border-bottom:1px solid #f1f2f6; }
+        .autocomplete-recent-title b { color:#2d3436; }
+        /* 2026-09-23 2단계: 세부내용 기반 카테고리 추천 */
+        .smart-cat-recommend { display:none; margin:-2px 0 10px; padding:10px 11px; background:#f8fbff; border:1px solid #dbeafe; border-radius:12px; }
+        .smart-cat-recommend.show { display:block; }
+        .smart-cat-title { font-size:.72rem; color:#636e72; margin-bottom:7px; font-weight:700; }
+        .smart-cat-chips { display:flex; flex-wrap:wrap; gap:6px; }
+        .smart-cat-chip { border:1px solid #cfd8e3; background:#fff; color:#2d3436; border-radius:999px; padding:7px 10px; font-size:.75rem; font-weight:800; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,.04); }
+        .smart-cat-chip.expense { color:#c0392b; border-color:#ffd0cc; background:#fff8f7; }
+        .smart-cat-chip.income { color:#0875c1; border-color:#c9e5ff; background:#f7fbff; }
+        .smart-cat-chip small { font-size:.66rem; font-weight:600; color:#7f8c8d; margin-left:4px; }
+        .smart-cat-chip:active { transform:scale(.97); }
+
+
+        /* 2026-09-23 9단계: 사용 패턴 기반 자동 추천 빠른입력 */
+        .dynamic-quick-box { margin: 2px 0 12px; padding: 11px; background:#fffdf6; border:1px solid #f3e4a8; border-radius:14px; }
+        .dynamic-quick-head { display:flex; justify-content:space-between; gap:8px; align-items:center; margin-bottom:8px; }
+        .dynamic-quick-title { font-size:.78rem; font-weight:900; color:#5f4b00; }
+        .dynamic-quick-note { font-size:.64rem; color:#8a7a45; white-space:nowrap; }
+        .dynamic-quick-chips { display:flex; flex-wrap:wrap; gap:7px; }
+        .dynamic-quick-chip { border:1px solid #ead58a; background:#fff; color:#2d3436; border-radius:12px; padding:8px 10px; cursor:pointer; text-align:left; line-height:1.25; min-width:0; max-width:100%; box-shadow:0 2px 6px rgba(0,0,0,.04); }
+        .dynamic-quick-chip .dq-main { display:block; font-size:.78rem; font-weight:900; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:210px; }
+        .dynamic-quick-chip .dq-meta { display:block; margin-top:3px; font-size:.64rem; color:#7f8c8d; font-weight:700; }
+        .dynamic-quick-chip.income { border-color:#c9e5ff; background:#f8fcff; }
+        .dynamic-quick-chip.expense { border-color:#ffd4cf; background:#fff9f8; }
+        .dynamic-quick-chip:active { transform:scale(.97); }
+        @media (max-width:600px) {
+            .dynamic-quick-head { align-items:flex-start; }
+            .dynamic-quick-note { white-space:normal; text-align:right; }
+            .dynamic-quick-chip { flex:1 1 calc(50% - 7px); }
+            .dynamic-quick-chip .dq-main { max-width:145px; }
+        }
 
         .ledger-entry-main { display:flex; align-items:center; width:100%; gap:10px; }
         .ledger-entry-info { flex:1; min-width:0; }
@@ -571,6 +608,33 @@ th:first-child, td:first-child {
             .item-actions { gap:5px; margin-left:3px; }
         }
 
+    
+
+        /* 2026-09-23 7단계: 월말 마감 점검 */
+        .month-end-check-modal .modal { max-width:520px; }
+        .month-end-toolbar { display:grid; grid-template-columns:1fr 1fr auto; gap:8px; align-items:end; margin:8px 0 14px; }
+        .month-end-toolbar select { margin-bottom:0; padding:10px; }
+        .month-end-run { border:0; background:#2d3436; color:#fff; border-radius:12px; padding:11px 14px; font-weight:800; cursor:pointer; white-space:nowrap; }
+        .month-end-summary { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin-bottom:12px; }
+        .month-end-stat { background:#f8f9fa; border:1px solid #eee; border-radius:12px; padding:10px; text-align:center; }
+        .month-end-stat b { display:block; font-size:1.25rem; margin-top:3px; }
+        .month-end-section { border-top:1px solid #eee; padding-top:12px; margin-top:12px; }
+        .month-end-section-title { font-weight:900; margin-bottom:7px; display:flex; justify-content:space-between; gap:10px; }
+        .month-end-row { background:#fff; border:1px solid #eee; border-radius:10px; padding:9px 10px; margin-bottom:7px; cursor:pointer; }
+        .month-end-row:active { transform:scale(.99); }
+        .month-end-row-main { display:flex; justify-content:space-between; gap:10px; font-size:.84rem; font-weight:800; }
+        .month-end-row-sub { margin-top:3px; color:#636e72; font-size:.73rem; line-height:1.35; word-break:break-word; }
+        .month-end-actions { display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
+        .month-end-action-btn { border:1px solid #dfe6e9; background:#fff; color:#2d3436; border-radius:9px; padding:7px 10px; font-size:.72rem; font-weight:800; cursor:pointer; }
+        .month-end-action-btn.receipt { background:#fff8e8; border-color:#ffd59a; color:#a75b00; }
+        .month-end-action-btn.edit { background:#eef7ff; border-color:#b9dcff; color:#1769aa; }
+        .month-end-action-btn:active { transform:scale(.97); }
+        .month-end-empty { color:#00b894; background:#effff9; border:1px solid #b8f0dd; padding:10px; border-radius:10px; font-size:.8rem; }
+        @media (max-width:600px) {
+            .month-end-toolbar { grid-template-columns:1fr 1fr; }
+            .month-end-run { grid-column:1 / -1; width:100%; }
+        }
+
     </style>
 </head>
 <body>
@@ -591,6 +655,7 @@ th:first-child, td:first-child {
             <div class="backup-btns">
     <button class="btn-backup admin-only" onclick="changeAdminPassword()">🔑PW변경</button>
     <button class="btn-backup admin-only" onclick="exportData()">💾 백업</button>
+    <button class="btn-backup admin-only" onclick="createSafetyBaseline()">🛡️안전복사</button>
 
     <button class="btn-backup admin-only" onclick="document.getElementById('loadFile').click()">📂 복구</button>
     <button class="btn-save-exit admin-only" onclick="saveAndExit()">저장하고 나가기 🚪</button>
@@ -618,6 +683,8 @@ th:first-child, td:first-child {
         <div class="section-header">
             <div class="section-title"><span>📝 수입/지출 관리</span></div>
             <div style="display:flex; gap:5px;">
+                <button class="btn-sub admin-only" style="background:#e8fff8; color:#007f63; border:1px solid #a7ead8;" onclick="openRestorePointManager()">⏱ 자동복구점</button>
+                <button class="btn-sub admin-only" style="background:#fff7e6; color:#a75b00; border:1px solid #ffd59a;" onclick="openMonthEndCheck()">✅ 월말점검</button>
                 <button class="btn-sub" style="background:#fff; color:var(--primary); border:1px solid var(--primary);" onclick="goTab('report')">📊 결산및 감사보고</button>
             </div>
         </div>
@@ -634,8 +701,19 @@ th:first-child, td:first-child {
                 <input type="number" id="tAmt" placeholder="금액" style="flex:1; font-weight:bold;">
             </div>
             <div class="autocomplete-wrap">
-                <input type="text" id="tDesc" placeholder="내용 (예: 홍길동 1~6월 회비)" autocomplete="off" oninput="onDescInput()" onkeydown="onDescKeydown(event)">
+                <input type="text" id="tDesc" placeholder="내용 (예: 홍길동 1~6월 회비)" autocomplete="off" onfocus="showRecentLedgerHistory()" oninput="onDescInput()" onkeydown="onDescKeydown(event)">
                 <div class="autocomplete-list" id="acList"></div>
+            </div>
+            <div class="smart-cat-recommend" id="smartCatRecommend">
+                <div class="smart-cat-title">💡 과거 장부 기준 추천 항목</div>
+                <div class="smart-cat-chips" id="smartCatChips"></div>
+            </div>
+            <div class="dynamic-quick-box" id="dynamicQuickBox">
+                <div class="dynamic-quick-head">
+                    <div class="dynamic-quick-title">⚡ 자동 추천 빠른입력</div>
+                    <div class="dynamic-quick-note">최근 사용량에 따라 자동 변경</div>
+                </div>
+                <div class="dynamic-quick-chips" id="dynamicQuickChips"></div>
             </div>
             <!-- ✅ 빠른 월 선택 버튼 (월회비 입력 시 표시) -->
             <div id="quickMonthArea" style="display:none; margin-bottom:6px;">
@@ -651,6 +729,12 @@ th:first-child, td:first-child {
                 <span class="ledger-search-icon">🔎</span>
                 <input type="search" id="ledgerSearch" placeholder="이름·내용·항목·금액 검색" autocomplete="off" oninput="onLedgerSearchInput()">
                 <button type="button" class="ledger-search-clear" id="ledgerSearchClear" onclick="clearLedgerSearch()" aria-label="검색어 지우기">×</button>
+            </div>
+            <label class="filter-label">영수증 상태</label>
+            <div class="chip-group" id="receiptStatusChips">
+                <button class="filter-chip active" onclick="toggleReceiptStatus(this, 'all')">전체</button>
+                <button class="filter-chip" id="receiptMissingChip" onclick="toggleReceiptStatus(this, 'missing')">🧾 미등록</button>
+                <button class="filter-chip" id="receiptDoneChip" onclick="toggleReceiptStatus(this, 'done')">✅ 등록완료</button>
             </div>
             <label class="filter-label">월 선택</label>
             <div class="chip-group" id="monthChips">
@@ -1179,6 +1263,22 @@ th:first-child, td:first-child {
         </div>
     </div>
 
+
+<!-- 자동 복구점 관리 -->
+<div id="restorePointModal" class="modal-wrap" style="display:none; z-index:2500;">
+  <div class="modal" style="max-width:520px;">
+    <button class="modal-close-x" onclick="closeRestorePointManager()">×</button>
+    <h3 style="margin-top:0;">⏱ 자동 복구점</h3>
+    <div style="font-size:.82rem; color:#636e72; line-height:1.55; margin-bottom:12px;">
+      장부·회원·일정·설정 상태를 자동 저장합니다. 영수증 사진은 중복 저장하지 않고 안전미러/이력에서 복원해 용량을 줄입니다.<br>
+      최근 <b>20개</b> 복구점만 자동 보관하며 오래된 항목은 자동 정리됩니다.
+    </div>
+    <button class="btn-main" style="margin-bottom:12px; background:linear-gradient(135deg,#00b894,#00cec9);" onclick="createManualRestorePoint()">＋ 지금 복구점 저장</button>
+    <div id="restorePointStatus" style="font-size:.78rem; color:#636e72; margin-bottom:10px;"></div>
+    <div id="restorePointList" style="max-height:52vh; overflow:auto;"></div>
+  </div>
+</div>
+
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getDatabase, ref, set, get, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
@@ -1197,8 +1297,17 @@ import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from
     const CLUB_ID = 'jinrye_modern_pickleball';
     const BASE_PATH = `clubs/${CLUB_ID}`;
     const CLUB_ROOT = BASE_PATH;
+    // 메인 회계 데이터와 분리된 안전영역
+    const SAFETY_ROOT = `clubs/${CLUB_ID}__safety`;
     const db = getDatabase(app);
     const auth = getAuth(app);
+
+// [2026-09-23 데이터보호 강화]
+// 1) CLUB_ROOT 전체 덮어쓰기/자동 마이그레이션 금지
+// 2) 장부/영수증은 건별 원자적(update) 저장
+// 3) 같은 데이터를 별도 SAFETY_ROOT/liveMirror 에 동시 보관
+// 4) 수정/삭제 전 값은 SAFETY_ROOT/archive 에 이력 보관
+// 5) 앱 시작 시 liveMirror를 함께 읽어 누락 항목을 화면에서 자동 보완
 
 // 리스트에서 즉시 삭제하는 기능 추가
     window.deleteTransDirect = (id) => {
@@ -1267,6 +1376,7 @@ const ROLE_GROUPS_DEF = {
     window.curCalDate = getKoreaDateObject();
     window.selectedMonths = new Set([formatKoreaISODate().substring(5, 7)]); 
     window.selectedCats = new Set(['all']);
+    window.receiptStatusFilter = 'all';
     window.isAdmin = false; 
     window.isAuditMode = false; 
 window.excludeInactive = false; // 휴,탈회 제외 상태 변수
@@ -1344,43 +1454,50 @@ window.onload = () => {
             }
         }, 10000); // 10초 타임아웃
 
-        // Firebase 데이터 불러오기
+        // Firebase 데이터 불러오기: 본 데이터 + 별도 안전 미러를 합쳐서 표시
         const clubRef = ref(db, CLUB_ROOT);
-        onValue(clubRef, (snapshot) => {
-            document.getElementById('loadingOverlay').style.display = 'none'; // 로딩 해제
-            const data = snapshot.val();
-            if (data) {
-                const deletedTrans = data.deletedTrans || {};
-                const deletedReceipts = data.deletedReceipts || {};
-                const legacyTrans = Array.isArray(data.trans) ? data.trans : Object.values(data.trans || {});
-                const itemTrans = Object.values(data.transItems || {});
-                const transMap = new Map();
-                legacyTrans.forEach(x => { if (x && !deletedTrans[String(x.id)]) transMap.set(String(x.id), x); });
-                itemTrans.forEach(x => { if (x && !deletedTrans[String(x.id)]) transMap.set(String(x.id), x); });
-                window.trans = Array.from(transMap.values()).sort((a,b) => Number(b.id||0)-Number(a.id||0));
-               // 'members_acc'라는 별도 명단이 있으면 그걸 쓰고, 없으면 기존 'members'를 가져옵니다(최초 1회 복사)
-window.members = data.members_acc || data.members || [];
-                const legacyReceipts = Array.isArray(data.receipts) ? data.receipts : Object.values(data.receipts || {});
-                const itemReceipts = Object.values(data.receiptItems || {});
-                const receiptMap = new Map();
-                legacyReceipts.forEach(x => { if (x && !deletedReceipts[String(x.id)]) receiptMap.set(String(x.id), x); });
-                itemReceipts.forEach(x => { if (x && !deletedReceipts[String(x.id)]) receiptMap.set(String(x.id), x); });
-                window.receipts = Array.from(receiptMap.values()).sort((a,b) => Number(b.id||0)-Number(a.id||0));
-                window.events = data.events || [];
-                window.settings = data.settings || {};
-                
-                if(data.auditState) window.auditState = data.auditState;
-            } else {
-                saveToFirebase(); // 데이터 없으면 초기화
+        onValue(clubRef, async (snapshot) => {
+            document.getElementById('loadingOverlay').style.display = 'none';
+            const data = snapshot.val() || {};
+            let mirror = {};
+            try {
+                const mirrorSnap = await get(ref(db, `${SAFETY_ROOT}/liveMirror`));
+                mirror = mirrorSnap.val() || {};
+            } catch(e) {
+                console.warn('안전 미러 읽기 실패(본 데이터는 계속 사용):', e);
             }
-            // 설정 적용
-            if(window.settings && window.settings.fees) {
-                currentFees = { ...DEFAULT_FEES, ...window.settings.fees };
-            }
+
+            const deletedTrans = data.deletedTrans || {};
+            const deletedReceipts = data.deletedReceipts || {};
+            const legacyTrans = Array.isArray(data.trans) ? data.trans : Object.values(data.trans || {});
+            const itemTrans = Object.values(data.transItems || {});
+            const mirrorTrans = Object.values(mirror.transItems || {});
+            const transMap = new Map();
+            legacyTrans.forEach(x => { if (x && !deletedTrans[String(x.id)]) transMap.set(String(x.id), x); });
+            itemTrans.forEach(x => { if (x && !deletedTrans[String(x.id)]) transMap.set(String(x.id), x); });
+            mirrorTrans.forEach(x => { if (x && !deletedTrans[String(x.id)] && !transMap.has(String(x.id))) transMap.set(String(x.id), x); });
+            window.trans = Array.from(transMap.values()).sort((a,b) => Number(b.id||0)-Number(a.id||0));
+
+            window.members = data.members_acc || data.members || [];
+
+            const legacyReceipts = Array.isArray(data.receipts) ? data.receipts : Object.values(data.receipts || {});
+            const itemReceipts = Object.values(data.receiptItems || {});
+            const mirrorReceipts = Object.values(mirror.receiptItems || {});
+            const receiptMap = new Map();
+            legacyReceipts.forEach(x => { if (x && !deletedReceipts[String(x.id)]) receiptMap.set(String(x.id), x); });
+            itemReceipts.forEach(x => { if (x && !deletedReceipts[String(x.id)]) receiptMap.set(String(x.id), x); });
+            mirrorReceipts.forEach(x => { if (x && !deletedReceipts[String(x.id)] && !receiptMap.has(String(x.id))) receiptMap.set(String(x.id), x); });
+            window.receipts = Array.from(receiptMap.values()).sort((a,b) => Number(b.id||0)-Number(a.id||0));
+
+            window.events = data.events || [];
+            window.settings = data.settings || {};
+            if(data.auditState) window.auditState = data.auditState;
+
+            // 데이터가 비어 있어도 자동 초기화/덮어쓰기를 절대 하지 않음
+            if(window.settings && window.settings.fees) currentFees = { ...DEFAULT_FEES, ...window.settings.fees };
             setCategories();
             renderAll();
         }, (error) => {
-            // 에러 발생 시에도 로딩창 닫기
             document.getElementById('loadingOverlay').style.display = 'none';
             alert("데이터를 불러오는 중 오류가 발생했습니다: " + error.message);
         });
@@ -1395,39 +1512,334 @@ function cacheCurrentData() {
     } catch(e) { console.warn('안전 캐시 저장 실패:', e); }
 }
 
+async function safeGet(path) {
+    try {
+        const snap = await get(ref(db, path));
+        return snap.exists() ? snap.val() : null;
+    } catch(e) {
+        console.warn('기존값 확인 실패:', path, e);
+        return null;
+    }
+}
+
+function safetyStamp() {
+    return `${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
+}
+
+
+// ===================== 자동 복구점 (2026-09-23) =====================
+const RESTORE_ROOT = `${SAFETY_ROOT}/restorePoints`;
+const RESTORE_LIMIT = 20;
+const AUTO_RESTORE_MIN_INTERVAL = 2 * 60 * 1000; // 잦은 입력 시 2분 단위로 묶음
+let lastAutoRestoreAt = 0;
+let restorePointBusy = false;
+
+function makeReceiptRef(x) {
+    if(!x || x.id == null) return null;
+    return {
+        id: x.id,
+        date: x.date || '',
+        desc: x.desc || '',
+        linkedTransId: x.linkedTransId ?? x.transId ?? null
+    };
+}
+
+function buildRestorePointPayload(reason='자동 저장') {
+    const transItems = {};
+    (window.trans || []).forEach(x => { if(x && x.id != null) transItems[String(x.id)] = x; });
+    const receiptRefs = {};
+    (window.receipts || []).forEach(x => {
+        const r = makeReceiptRef(x);
+        if(r) receiptRefs[String(r.id)] = r;
+    });
+    return {
+        createdAt: Date.now(),
+        createdAtText: getKoreaTimestampISO(),
+        reason,
+        transCount: Object.keys(transItems).length,
+        receiptCount: Object.keys(receiptRefs).length,
+        memberCount: (window.members || []).length,
+        transItems,
+        receiptRefs,
+        members_acc: window.members || [],
+        events: window.events || [],
+        settings: window.settings || {},
+        auditState: window.auditState || null
+    };
+}
+
+async function pruneRestorePoints() {
+    try {
+        const snap = await get(ref(db, RESTORE_ROOT));
+        const obj = snap.val() || {};
+        const rows = Object.entries(obj).map(([id,v]) => ({id, createdAt:Number(v?.createdAt||id.split('_')[0]||0)}))
+            .sort((a,b) => b.createdAt-a.createdAt);
+        if(rows.length <= RESTORE_LIMIT) return;
+        const updates = {};
+        rows.slice(RESTORE_LIMIT).forEach(r => updates[`${RESTORE_ROOT}/${r.id}`] = null);
+        if(Object.keys(updates).length) await update(ref(db), updates);
+    } catch(e) { console.warn('오래된 복구점 정리 실패:', e); }
+}
+
+async function createRestorePoint(reason='자동 저장', force=false) {
+    if(!window.isAdmin || restorePointBusy) return false;
+    const now = Date.now();
+    if(!force && now-lastAutoRestoreAt < AUTO_RESTORE_MIN_INTERVAL) return false;
+    restorePointBusy = true;
+    try {
+        const payload = buildRestorePointPayload(reason);
+        const id = `${payload.createdAt}_${Math.random().toString(36).slice(2,7)}`;
+        await set(ref(db, `${RESTORE_ROOT}/${id}`), payload);
+        lastAutoRestoreAt = now;
+        localStorage.setItem('jinryePickleballLastRestorePointAt', String(now));
+        pruneRestorePoints();
+        return true;
+    } catch(e) {
+        console.warn('자동 복구점 저장 실패:', e);
+        return false;
+    } finally {
+        restorePointBusy = false;
+    }
+}
+
+function scheduleAutoRestorePoint(reason='자동 저장') {
+    // 본 저장이 성공한 뒤 UI를 막지 않고 복구점을 남김
+    setTimeout(() => createRestorePoint(reason, false), 80);
+}
+
+async function recoverReceiptForPoint(id, pointTime) {
+    const sid = String(id);
+    // 수정/삭제 이후라면, 복구점 직후 처음 생성된 archive가 당시 상태와 가장 가깝다.
+    try {
+        const arcSnap = await get(ref(db, `${SAFETY_ROOT}/archive/receiptItems/${sid}`));
+        const arcs = arcSnap.val() || {};
+        const after = Object.entries(arcs)
+            .map(([k,v]) => ({k,v,t:Number(String(k).split('_')[0]||0)}))
+            .filter(x => x.t >= Number(pointTime||0) && x.v && x.v.img)
+            .sort((a,b)=>a.t-b.t);
+        if(after.length) return after[0].v;
+    } catch(e) { console.warn('영수증 archive 확인 실패', sid, e); }
+    const main = await safeGet(`${CLUB_ROOT}/receiptItems/${sid}`);
+    if(main && main.img) return main;
+    const mirror = await safeGet(`${SAFETY_ROOT}/liveMirror/receiptItems/${sid}`);
+    if(mirror && mirror.img) return mirror;
+    return null;
+}
+
+window.openRestorePointManager = async () => {
+    if(!window.isAdmin) return alert('관리자 로그인이 필요합니다.');
+    document.getElementById('restorePointModal').style.display='flex';
+    await renderRestorePointList();
+};
+window.closeRestorePointManager = () => { document.getElementById('restorePointModal').style.display='none'; };
+
+window.createManualRestorePoint = async () => {
+    if(!window.isAdmin) return alert('관리자 로그인이 필요합니다.');
+    const status=document.getElementById('restorePointStatus');
+    if(status) status.textContent='복구점 저장 중...';
+    const ok=await createRestorePoint('수동 복구점', true);
+    if(status) status.textContent=ok?'✅ 복구점 저장 완료':'⚠️ 복구점 저장 실패';
+    await renderRestorePointList();
+};
+
+async function renderRestorePointList() {
+    const box=document.getElementById('restorePointList');
+    const status=document.getElementById('restorePointStatus');
+    if(!box) return;
+    box.innerHTML='<div style="padding:15px;text-align:center;color:#999;">불러오는 중...</div>' ;
+    try {
+        const snap=await get(ref(db, RESTORE_ROOT));
+        const obj=snap.val()||{};
+        const rows=Object.entries(obj).map(([id,v])=>({id,...v})).sort((a,b)=>Number(b.createdAt||0)-Number(a.createdAt||0));
+        if(status) status.textContent=`현재 ${rows.length}개 / 최대 ${RESTORE_LIMIT}개 자동 보관`;
+        if(!rows.length){ box.innerHTML='<div style="padding:18px;text-align:center;color:#999;">저장된 복구점이 없습니다.</div>'; return; }
+        box.innerHTML=rows.map((r,i)=>`
+          <div style="border:1px solid #e8ecef;border-radius:13px;padding:11px 12px;margin-bottom:8px;background:#fff;">
+            <div style="display:flex;justify-content:space-between;gap:8px;align-items:center;">
+              <div style="min-width:0;">
+                <div style="font-weight:800;font-size:.9rem;">${i===0?'🟢 ':''}${escapeHtml(String(r.createdAtText||''))}</div>
+                <div style="font-size:.72rem;color:#636e72;margin-top:3px;">${escapeHtml(String(r.reason||'자동 저장'))} · 장부 ${Number(r.transCount||0)}건 · 영수증 ${Number(r.receiptCount||0)}건 · 회원 ${Number(r.memberCount||0)}명</div>
+              </div>
+              <button class="btn-sub" style="background:#2d3436;color:#fff;border:none;flex-shrink:0;" onclick="restoreFromPoint('${r.id}')">복원</button>
+            </div>
+          </div>`).join('');
+    } catch(e) {
+        box.innerHTML=`<div style="padding:15px;color:#d63031;">복구점 조회 실패: ${escapeHtml(e.message||String(e))}</div>`;
+    }
+}
+
+window.restoreFromPoint = async (pointId) => {
+    if(!window.isAdmin) return alert('관리자 로그인이 필요합니다.');
+    if(!confirm('선택한 시점으로 장부·회비·회원·일정·설정을 되돌립니다.\n현재 상태는 복원 직전 긴급 복구점으로 먼저 저장합니다. 계속하시겠습니까?')) return;
+    document.getElementById('loadingMsg').innerText='복원 준비 중...';
+    document.getElementById('loadingOverlay').style.display='flex';
+    try {
+        const point=await safeGet(`${RESTORE_ROOT}/${pointId}`);
+        if(!point) throw new Error('선택한 복구점을 찾을 수 없습니다.');
+        await createRestorePoint('복원 직전 긴급 복구점', true);
+
+        const desiredReceipts={};
+        const missing=[];
+        for(const id of Object.keys(point.receiptRefs||{})) {
+            document.getElementById('loadingMsg').innerText=`영수증 복원 확인 ${Object.keys(desiredReceipts).length+1}/${Object.keys(point.receiptRefs||{}).length}`;
+            const full=await recoverReceiptForPoint(id, point.createdAt);
+            if(full) desiredReceipts[id]=full; else missing.push(id);
+        }
+        if(missing.length) throw new Error(`영수증 원본 ${missing.length}건을 안전미러/이력에서 찾지 못했습니다. 복원을 중단했습니다.`);
+
+        const curMain=(await safeGet(`${CLUB_ROOT}/transItems`))||{};
+        const curMirror=(await safeGet(`${SAFETY_ROOT}/liveMirror/transItems`))||{};
+        const curReceiptMain=(await safeGet(`${CLUB_ROOT}/receiptItems`))||{};
+        const curReceiptMirror=(await safeGet(`${SAFETY_ROOT}/liveMirror/receiptItems`))||{};
+        const updates={};
+        const desiredTrans=point.transItems||{};
+
+        // 현재에는 있지만 과거 복구점에는 없던 항목은 삭제표시
+        new Set([...Object.keys(curMain),...Object.keys(curMirror)]).forEach(id=>{
+            if(!desiredTrans[id]) {
+                updates[`${CLUB_ROOT}/transItems/${id}`]=null;
+                updates[`${SAFETY_ROOT}/liveMirror/transItems/${id}`]=null;
+                updates[`${CLUB_ROOT}/deletedTrans/${id}`]=true;
+            }
+        });
+        Object.entries(desiredTrans).forEach(([id,x])=>{
+            updates[`${CLUB_ROOT}/transItems/${id}`]=x;
+            updates[`${SAFETY_ROOT}/liveMirror/transItems/${id}`]=x;
+            updates[`${CLUB_ROOT}/deletedTrans/${id}`]=null;
+        });
+
+        new Set([...Object.keys(curReceiptMain),...Object.keys(curReceiptMirror)]).forEach(id=>{
+            if(!desiredReceipts[id]) {
+                updates[`${CLUB_ROOT}/receiptItems/${id}`]=null;
+                updates[`${SAFETY_ROOT}/liveMirror/receiptItems/${id}`]=null;
+                updates[`${CLUB_ROOT}/deletedReceipts/${id}`]=true;
+            }
+        });
+        Object.entries(desiredReceipts).forEach(([id,x])=>{
+            updates[`${CLUB_ROOT}/receiptItems/${id}`]=x;
+            updates[`${SAFETY_ROOT}/liveMirror/receiptItems/${id}`]=x;
+            updates[`${CLUB_ROOT}/deletedReceipts/${id}`]=null;
+        });
+
+        updates[`${CLUB_ROOT}/members_acc`]=point.members_acc||[];
+        updates[`${CLUB_ROOT}/events`]=point.events||[];
+        updates[`${CLUB_ROOT}/settings`]=point.settings||{};
+        if(point.auditState) updates[`${CLUB_ROOT}/auditState`]=point.auditState;
+        updates[`${SAFETY_ROOT}/meta/lastRestore`]={at:getKoreaTimestampISO(), pointId, sourceAt:point.createdAtText||''};
+        await update(ref(db), updates);
+        alert('✅ 복원이 완료되었습니다. 화면을 다시 불러옵니다.');
+        location.reload();
+    } catch(e) {
+        console.error(e);
+        alert('복원 실패: '+e.message);
+    } finally {
+        document.getElementById('loadingOverlay').style.display='none';
+    }
+};
+// ==================================================================
+
 async function persistTransItem(item) {
     cacheCurrentData();
-    const path = `${CLUB_ROOT}/transItems/${item.id}`;
-    await set(ref(db, path), item);
-    const check = await get(ref(db, path));
-    if (!check.exists()) throw new Error('장부 서버 확인 실패');
-    await remove(ref(db, `${CLUB_ROOT}/deletedTrans/${item.id}`));
+    const id = String(item.id);
+    const mainPath = `${CLUB_ROOT}/transItems/${id}`;
+    const mirrorPath = `${SAFETY_ROOT}/liveMirror/transItems/${id}`;
+    const old = await safeGet(mainPath);
+    const stamp = safetyStamp();
+    const updates = {};
+    updates[mainPath] = item;
+    updates[mirrorPath] = item;
+    updates[`${CLUB_ROOT}/deletedTrans/${id}`] = null;
+    updates[`${SAFETY_ROOT}/meta/lastWrite`] = { at:getKoreaTimestampISO(), type:'trans', id:id, action: old ? 'update' : 'create' };
+    if(old) updates[`${SAFETY_ROOT}/archive/transItems/${id}/${stamp}`] = old;
+    await update(ref(db), updates);
+    const [mainCheck, mirrorCheck] = await Promise.all([get(ref(db, mainPath)), get(ref(db, mirrorPath))]);
+    if(!mainCheck.exists() || !mirrorCheck.exists()) throw new Error('장부 이중 서버 저장 확인 실패');
+    scheduleAutoRestorePoint(old ? '장부 수정 후' : '장부 입력 후');
 }
 
 async function deleteTransItem(id) {
     cacheCurrentData();
-    await Promise.all([
-        remove(ref(db, `${CLUB_ROOT}/transItems/${id}`)),
-        set(ref(db, `${CLUB_ROOT}/deletedTrans/${id}`), true)
-    ]);
+    id = String(id);
+    const mainPath = `${CLUB_ROOT}/transItems/${id}`;
+    const old = await safeGet(mainPath) || await safeGet(`${SAFETY_ROOT}/liveMirror/transItems/${id}`);
+    const stamp = safetyStamp();
+    const updates = {};
+    updates[mainPath] = null;
+    updates[`${CLUB_ROOT}/deletedTrans/${id}`] = true;
+    updates[`${SAFETY_ROOT}/liveMirror/transItems/${id}`] = null;
+    updates[`${SAFETY_ROOT}/meta/lastWrite`] = { at:getKoreaTimestampISO(), type:'trans', id:id, action:'delete' };
+    if(old) updates[`${SAFETY_ROOT}/archive/transItems/${id}/${stamp}`] = old;
+    await update(ref(db), updates);
+    scheduleAutoRestorePoint('장부 삭제 후');
 }
 
 async function persistReceiptItem(item) {
     cacheCurrentData();
-    const path = `${CLUB_ROOT}/receiptItems/${item.id}`;
-    await set(ref(db, path), item);
-    const check = await get(ref(db, path));
-    if (!check.exists() || !check.val().img) throw new Error('영수증 서버 확인 실패');
-    await remove(ref(db, `${CLUB_ROOT}/deletedReceipts/${item.id}`));
+    const id = String(item.id);
+    const mainPath = `${CLUB_ROOT}/receiptItems/${id}`;
+    const mirrorPath = `${SAFETY_ROOT}/liveMirror/receiptItems/${id}`;
+    const old = await safeGet(mainPath);
+    const stamp = safetyStamp();
+    const updates = {};
+    updates[mainPath] = item;
+    updates[mirrorPath] = item;
+    updates[`${CLUB_ROOT}/deletedReceipts/${id}`] = null;
+    updates[`${SAFETY_ROOT}/meta/lastWrite`] = { at:getKoreaTimestampISO(), type:'receipt', id:id, action: old ? 'update' : 'create' };
+    if(old) updates[`${SAFETY_ROOT}/archive/receiptItems/${id}/${stamp}`] = old;
+    await update(ref(db), updates);
+    const [mainCheck, mirrorCheck] = await Promise.all([get(ref(db, mainPath)), get(ref(db, mirrorPath))]);
+    if(!mainCheck.exists() || !mainCheck.val().img || !mirrorCheck.exists() || !mirrorCheck.val().img) {
+        throw new Error('영수증 이중 서버 저장 확인 실패');
+    }
+    scheduleAutoRestorePoint(old ? '영수증 수정 후' : '영수증 등록 후');
 }
 
 async function deleteReceiptItem(id) {
     cacheCurrentData();
-    await Promise.all([
-        remove(ref(db, `${CLUB_ROOT}/receiptItems/${id}`)),
-        set(ref(db, `${CLUB_ROOT}/deletedReceipts/${id}`), true)
-    ]);
+    id = String(id);
+    const mainPath = `${CLUB_ROOT}/receiptItems/${id}`;
+    const old = await safeGet(mainPath) || await safeGet(`${SAFETY_ROOT}/liveMirror/receiptItems/${id}`);
+    const stamp = safetyStamp();
+    const updates = {};
+    updates[mainPath] = null;
+    updates[`${CLUB_ROOT}/deletedReceipts/${id}`] = true;
+    updates[`${SAFETY_ROOT}/liveMirror/receiptItems/${id}`] = null;
+    updates[`${SAFETY_ROOT}/meta/lastWrite`] = { at:getKoreaTimestampISO(), type:'receipt', id:id, action:'delete' };
+    if(old) updates[`${SAFETY_ROOT}/archive/receiptItems/${id}/${stamp}`] = old;
+    await update(ref(db), updates);
+    scheduleAutoRestorePoint('영수증 삭제 후');
 }
+
+window.createSafetyBaseline = async () => {
+    if(!window.isAdmin) return alert('관리자 로그인이 필요합니다.');
+    if(!confirm('현재 장부와 영수증을 피클볼 회계 메인 데이터와 분리된 별도 안전영역에 복사합니다.\n기존 안전복사본은 지우지 않습니다. 계속하시겠습니까?')) return;
+    document.getElementById('loadingMsg').innerText = '안전 복사본 생성 중...';
+    document.getElementById('loadingOverlay').style.display = 'flex';
+    try {
+        // 장부는 이미지가 없어 한 번에 원자적으로 복사
+        const transUpdates = {};
+        (window.trans || []).forEach(x => {
+            if(x && x.id != null) transUpdates[`${SAFETY_ROOT}/liveMirror/transItems/${String(x.id)}`] = x;
+        });
+        transUpdates[`${SAFETY_ROOT}/meta/baseline`] = {
+            at:getKoreaTimestampISO(), transCount:(window.trans||[]).length, receiptCount:(window.receipts||[]).length
+        };
+        await update(ref(db), transUpdates);
+
+        // 영수증은 이미지가 커서 한 건씩 복사하여 대용량 일괄쓰기 실패 방지
+        let done = 0;
+        for(const x of (window.receipts || [])) {
+            if(!x || x.id == null) continue;
+            document.getElementById('loadingMsg').innerText = `영수증 안전복사 ${++done}/${(window.receipts||[]).length}`;
+            await set(ref(db, `${SAFETY_ROOT}/liveMirror/receiptItems/${String(x.id)}`), x);
+        }
+        alert('✅ 안전 복사본 생성 완료\n앞으로 새 장부/영수증은 본 데이터와 안전영역에 동시에 저장됩니다.');
+    } catch(e) {
+        alert('안전복사 실패: '+e.message+'\nFirebase 규칙에서 피클볼 안전영역 쓰기 권한을 확인하세요.');
+    } finally {
+        document.getElementById('loadingOverlay').style.display = 'none';
+    }
+};
 
 function saveToFirebase() {
     if(!window.isAdmin && !window.isAuditMode && window.trans.length > 0) return Promise.resolve();
@@ -1437,7 +1849,9 @@ function saveToFirebase() {
     updates[CLUB_ROOT + '/events'] = window.events;
     updates[CLUB_ROOT + '/settings'] = window.settings;
     if(window.auditState) updates[CLUB_ROOT + '/auditState'] = window.auditState;
-    return update(ref(db), updates);
+    return update(ref(db), updates).then(() => {
+        scheduleAutoRestorePoint('회원·일정·설정 변경 후');
+    });
 }
 
 window.saveAndExit = () => {
@@ -1499,6 +1913,9 @@ window.saveAndExit = () => {
             window.isAdmin = true;
             // 여기서 UID 체크를 한 번 더 해도 좋지만, DB 규칙이 이미 막고 있음
             console.log("관리자 접속:", user.email);
+            const prevAuto = Number(localStorage.getItem('jinryePickleballLastRestorePointAt') || 0);
+            lastAutoRestoreAt = prevAuto;
+            setTimeout(() => createRestorePoint('관리자 접속 자동 복구점', false), 1200);
         } else {
             // 로그아웃 시
             window.isAdmin = false;
@@ -1562,6 +1979,8 @@ window.saveAndExit = () => {
         // ✅ 카테고리 변경 시 빠른 월 영역 초기화
         resetSelectedDuesMonths();
         document.getElementById('acList').classList.remove('show');
+        if (typeof hideSmartCategoryRecommendations === 'function') hideSmartCategoryRecommendations();
+        if (typeof window.renderDynamicQuickRecommendations === 'function') window.renderDynamicQuickRecommendations();
         // ✅ tCat 변경 시 빠른 월 영역 재갱신
         el.onchange = () => {
             const desc = document.getElementById('tDesc').value.trim();
@@ -1824,6 +2243,63 @@ window.clearLedgerSearch = () => {
     renderLedger();
 };
 
+// 2026-09-23 6단계: 중복 입력 감지
+function normalizeDuplicateText(value) {
+    return String(value || '')
+        .toLowerCase()
+        .replace(/\s+/g, '')
+        .replace(/[\-_.·,()/\[\]{}:;!?]/g, '');
+}
+
+function duplicateTextScore(a, b) {
+    const x = normalizeDuplicateText(a);
+    const y = normalizeDuplicateText(b);
+    if (!x || !y) return 0;
+    if (x === y) return 1;
+    if (x.includes(y) || y.includes(x)) {
+        const minLen = Math.min(x.length, y.length);
+        const maxLen = Math.max(x.length, y.length);
+        return maxLen ? Math.max(0.78, minLen / maxLen) : 0;
+    }
+    // 간단한 bigram 유사도: 오탐을 줄이기 위해 짧은 단어는 엄격하게 처리
+    if (x.length < 3 || y.length < 3) return 0;
+    const grams = str => {
+        const out = new Set();
+        for (let i=0; i<str.length-1; i++) out.add(str.slice(i,i+2));
+        return out;
+    };
+    const gx = grams(x), gy = grams(y);
+    let common = 0;
+    gx.forEach(g => { if (gy.has(g)) common++; });
+    return (2 * common) / Math.max(1, gx.size + gy.size);
+}
+
+function findPossibleDuplicateTrans(candidate) {
+    const rows = Array.isArray(window.trans) ? window.trans : [];
+    return rows
+        .filter(t => t && String(t.date || '') === String(candidate.date || ''))
+        .filter(t => String(t.type || '') === String(candidate.type || ''))
+        .filter(t => Number(t.amt || 0) === Number(candidate.amt || 0))
+        .map(t => ({ ...t, _dupScore: duplicateTextScore(t.desc, candidate.desc) }))
+        .filter(t => {
+            const sameCat = String(t.cat || '') === String(candidate.cat || '');
+            const exactDesc = normalizeDuplicateText(t.desc) === normalizeDuplicateText(candidate.desc);
+            return exactDesc || t._dupScore >= 0.64 || (sameCat && t._dupScore >= 0.5);
+        })
+        .sort((a,b) => b._dupScore - a._dupScore || Number(b.id||0)-Number(a.id||0))
+        .slice(0, 3);
+}
+
+function confirmPossibleDuplicate(candidate) {
+    const hits = findPossibleDuplicateTrans(candidate);
+    if (!hits.length) return true;
+    const lines = hits.map((t, i) => {
+        const kind = t.type === 'income' ? '수입' : '지출';
+        return `${i+1}. ${t.date} · ${kind}/${t.cat || '항목없음'}\n   ${t.desc || '(내용없음)'} · ${Number(t.amt||0).toLocaleString()}원`;
+    }).join('\n\n');
+    return confirm(`⚠️ 비슷한 장부가 이미 있습니다.\n\n${lines}\n\n실제로 같은 금액이 다시 발생한 내역이면 [확인]을 눌러 그대로 저장하세요.\n중복 입력 같으면 [취소]를 눌러 기존 장부를 확인하세요.`);
+}
+
 window.addTrans = async () => {
         if(!window.isAdmin) return alert('관리자만 입력 가능합니다.');
         const date = document.getElementById('tDate').value;
@@ -1832,6 +2308,8 @@ window.addTrans = async () => {
         const amt = parseInt(document.getElementById('tAmt').value);
         const desc = document.getElementById('tDesc').value.trim();
         if(!date || !amt) return alert('금액 입력하세요.');
+
+        if (!confirmPossibleDuplicate({ date, type, cat, amt, desc })) return;
 
         const matchedMember = (type === 'income' && ['가입비','월회비','찬조금'].includes(cat))
             ? findMemberFromDesc(desc)
@@ -1862,6 +2340,7 @@ window.addTrans = async () => {
         setTimeout(() => { btn.innerText = "입력 완료"; btn.classList.remove('saved'); }, 1000);
         document.getElementById('tAmt').value=''; document.getElementById('tDesc').value='';
         resetSelectedDuesMonths();
+        if (typeof window.renderDynamicQuickRecommendations === 'function') window.renderDynamicQuickRecommendations();
     }
 
     function createFilterChips() {
@@ -1889,6 +2368,14 @@ window.addTrans = async () => {
             const btn = document.createElement('button'); btn.className = 'filter-chip'; btn.innerText = c;
             btn.onclick = () => toggleCat(btn, c); cCon.appendChild(btn);
         });
+    }
+
+    window.toggleReceiptStatus = (btn, val) => {
+        window.receiptStatusFilter = val || 'all';
+        document.querySelectorAll('#receiptStatusChips .filter-chip').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+        window.curLedgerPage = 1;
+        renderLedger();
     }
 
     window.toggleMonth = (btn, val) => {
@@ -1966,6 +2453,20 @@ window.renderLedger = () => {
         return haystack.includes(searchRaw) || haystack.replace(/\s+/g, '').includes(searchCompact);
     });
 
+    // 영수증 상태 필터: 현재 검색/월/항목 조건 안에서 미등록·등록완료 건수를 바로 확인
+    const receiptMissingCount = filtered.filter(t => t.type === 'expense' && !getReceiptForTransaction(t.id)).length;
+    const receiptDoneCount = filtered.filter(t => t.type === 'expense' && !!getReceiptForTransaction(t.id)).length;
+    const missingChip = document.getElementById('receiptMissingChip');
+    const doneChip = document.getElementById('receiptDoneChip');
+    if (missingChip) missingChip.innerText = `🧾 미등록 ${receiptMissingCount}`;
+    if (doneChip) doneChip.innerText = `✅ 등록완료 ${receiptDoneCount}`;
+
+    if (window.receiptStatusFilter === 'missing') {
+        filtered = filtered.filter(t => t.type === 'expense' && !getReceiptForTransaction(t.id));
+    } else if (window.receiptStatusFilter === 'done') {
+        filtered = filtered.filter(t => t.type === 'expense' && !!getReceiptForTransaction(t.id));
+    }
+
     // 2. [추가] 날짜순 정렬 (최신 날짜가 위로 오게 정렬)
     filtered.sort((a, b) => {
         // 날짜를 비교하고, 날짜가 같다면 ID(생성시간) 순으로 정렬합니다.
@@ -2013,8 +2514,9 @@ window.renderLedger = () => {
                             ${t.type==='income'?'+':'-'}${formatStandard(t.amt)}
                         </div>
                         <div class="item-actions">
-                            <i class="fas fa-edit" style="color:#3498db; cursor:pointer; margin-left:5px;" onclick="openEditTrans(${t.id})"></i>
-                            <i class="fas fa-trash" style="color:#e74c3c; cursor:pointer; margin-left:5px;" onclick="deleteTransDirect(${t.id})"></i>
+                            <i class="fas fa-copy" title="이 내역 다시 입력" style="color:#00a884; cursor:pointer; margin-left:5px;" onclick="event.stopPropagation(); reuseTrans(${t.id})"></i>
+                            <i class="fas fa-edit" title="수정" style="color:#3498db; cursor:pointer; margin-left:5px;" onclick="openEditTrans(${t.id})"></i>
+                            <i class="fas fa-trash" title="삭제" style="color:#e74c3c; cursor:pointer; margin-left:5px;" onclick="deleteTransDirect(${t.id})"></i>
                         </div>
                     </div>
                 </div>
@@ -2149,46 +2651,435 @@ function checkRoleMatch(memberRole, groupKey) {
     }
 
     // ✅ 장부 자동완성 & 빠른 월 선택
+    // 회원 회비/가입비는 기존 회원 자동완성을 유지하고,
+    // 그 외 수입·지출은 과거 장부 데이터에서 내용/금액/항목을 찾아 자동완성한다.
     let acSelectedIdx = -1;
 
+    function escapeHtmlText(v) {
+        return String(v ?? '')
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    }
+
+    function normalizeLedgerKeyword(v) {
+        return String(v || '').toLowerCase().replace(/\s+/g, '').trim();
+    }
+
+    function buildLedgerHistorySuggestions(keyword, type) {
+        const q = normalizeLedgerKeyword(keyword);
+        if (!q) return [];
+        const rows = Array.isArray(window.trans) ? window.trans : [];
+        const grouped = new Map();
+
+        rows.forEach((t, idx) => {
+            if (!t || t.type !== type || !t.desc) return;
+            const desc = String(t.desc).trim();
+            const norm = normalizeLedgerKeyword(desc);
+            if (!norm || !norm.includes(q)) return;
+            const amt = Number(t.amt || 0);
+            const cat = String(t.cat || '');
+            // 같은 내용+금액+항목은 하나로 묶어 최근 사용일과 사용횟수를 보여준다.
+            const key = `${type}|${cat}|${amt}|${norm}`;
+            const dateNum = Number(String(t.date || '').replace(/-/g, '')) || 0;
+            const idNum = Number(t.id || 0);
+            const rankRecency = dateNum * 10000000000000 + idNum;
+            let score = 0;
+            if (norm === q) score += 10000;
+            if (norm.startsWith(q)) score += 5000;
+            score += Math.min(q.length * 50, 1000);
+            const existing = grouped.get(key);
+            if (!existing) {
+                grouped.set(key, { desc, amt, cat, type, date:t.date || '', count:1, score, rankRecency, firstIdx:idx });
+            } else {
+                existing.count += 1;
+                existing.score += 25;
+                if (rankRecency > existing.rankRecency) {
+                    existing.rankRecency = rankRecency;
+                    existing.date = t.date || existing.date;
+                }
+            }
+        });
+
+        return Array.from(grouped.values())
+            .sort((a,b) => (b.score-a.score) || (b.rankRecency-a.rankRecency) || (a.firstIdx-b.firstIdx))
+            .slice(0, 8);
+    }
+
+    // 2026-09-23 1~2단계: 세부내용 기반 자동선택 + 애매할 때 추천 후보 표시
+    function getLedgerCategoryCandidates(keyword) {
+        const q = normalizeLedgerKeyword(keyword);
+        if (!q) return [];
+        const rows = Array.isArray(window.trans) ? window.trans : [];
+        const groups = new Map();
+
+        rows.forEach((t, idx) => {
+            if (!t || !t.desc || !t.type || !t.cat) return;
+            if (!CATS[t.type] || !CATS[t.type].includes(t.cat)) return;
+            const norm = normalizeLedgerKeyword(t.desc);
+            if (!norm || !norm.includes(q)) return;
+
+            const key = `${t.type}|${t.cat}`;
+            const dateNum = Number(String(t.date || '').replace(/-/g, '')) || 0;
+            const idNum = Number(t.id || 0);
+            const recency = dateNum * 10000000000000 + idNum;
+            let weight = 1;
+            if (norm === q) weight += 8;
+            else if (norm.startsWith(q)) weight += 3;
+
+            const g = groups.get(key) || {
+                type: t.type, cat: t.cat, count: 0, weighted: 0, recency: 0, firstIdx: idx
+            };
+            g.count += 1;
+            g.weighted += weight;
+            g.recency = Math.max(g.recency, recency);
+            groups.set(key, g);
+        });
+
+        return Array.from(groups.values()).sort((a,b) =>
+            (b.weighted-a.weighted) || (b.count-a.count) || (b.recency-a.recency) || (a.firstIdx-b.firstIdx)
+        );
+    }
+
+    function inferLedgerTypeCategory(keyword) {
+        const ranked = getLedgerCategoryCandidates(keyword);
+        if (!ranked.length) return null;
+        const top = ranked[0];
+        const second = ranked[1];
+        // 한 종류로만 사용됐거나, 과거 사용 패턴이 충분히 우세할 때만 자동 선택한다.
+        const clear = !second || top.weighted >= second.weighted * 2 || top.count >= second.count + 2;
+        if (!clear) return null;
+        return top;
+    }
+
+    function hideSmartCategoryRecommendations() {
+        const box = document.getElementById('smartCatRecommend');
+        const chips = document.getElementById('smartCatChips');
+        if (box) box.classList.remove('show');
+        if (chips) chips.innerHTML = '';
+    }
+
+    function renderSmartCategoryRecommendations(keyword) {
+        const box = document.getElementById('smartCatRecommend');
+        const chips = document.getElementById('smartCatChips');
+        if (!box || !chips) return;
+        const q = String(keyword || '').trim();
+        if (!q) return hideSmartCategoryRecommendations();
+
+        const typeEl = document.getElementById('tType');
+        const catEl = document.getElementById('tCat');
+        // 회비/가입비에서 회원명을 찾는 중에는 기존 회원 자동완성을 우선한다.
+        if (typeEl && catEl && typeEl.value === 'income' && ['월회비','가입비'].includes(catEl.value)) {
+            const memberHit = window.members.some(m => !EXCLUDED_STATUSES.includes(m.status) && m.name && m.name.includes(q));
+            if (memberHit) return hideSmartCategoryRecommendations();
+        }
+
+        const ranked = getLedgerCategoryCandidates(q);
+        if (ranked.length < 2) return hideSmartCategoryRecommendations();
+        const top = ranked[0], second = ranked[1];
+        const clear = top.weighted >= second.weighted * 2 || top.count >= second.count + 2;
+        if (clear) return hideSmartCategoryRecommendations();
+
+        const items = ranked.slice(0,3);
+        chips.innerHTML = items.map((x, i) => {
+            const typeLabel = x.type === 'income' ? '수입' : '지출';
+            const cls = x.type === 'income' ? 'income' : 'expense';
+            return `<button type="button" class="smart-cat-chip ${cls}" data-type="${escapeHtmlText(x.type)}" data-cat="${escapeHtmlText(x.cat)}" onclick="selectSmartCategoryRecommendation(this)">${i===0?'추천 ':''}${typeLabel} · ${escapeHtmlText(x.cat)}<small>${x.count}회</small></button>`;
+        }).join('');
+        box.classList.add('show');
+    }
+
+    window.selectSmartCategoryRecommendation = (btn) => {
+        const type = btn.dataset.type || '';
+        const cat = btn.dataset.cat || '';
+        const typeEl = document.getElementById('tType');
+        const catEl = document.getElementById('tCat');
+        if (!typeEl || !catEl || !CATS[type] || !CATS[type].includes(cat)) return;
+        if (typeEl.value !== type) {
+            typeEl.value = type;
+            setCategories();
+        }
+        if (Array.from(catEl.options).some(op => op.value === cat)) catEl.value = cat;
+        catEl.dataset.autoSuggested = '1';
+        catEl.style.boxShadow = '0 0 0 3px rgba(9,132,227,.13)';
+        setTimeout(() => { if (catEl.dataset.autoSuggested === '1') catEl.style.boxShadow = ''; }, 700);
+        hideSmartCategoryRecommendations();
+        // 추천을 고른 뒤 해당 수입/지출 기준으로 과거 장부 자동완성 목록도 다시 갱신
+        window.onDescInput();
+    };
+
+    function applySmartLedgerCategory(keyword) {
+        const typeEl = document.getElementById('tType');
+        const catEl = document.getElementById('tCat');
+        if (!typeEl || !catEl) return null;
+
+        // 회비/가입비 입력 중에는 회원 자동완성 흐름을 우선한다.
+        if (typeEl.value === 'income' && ['월회비','가입비'].includes(catEl.value)) {
+            const q = String(keyword || '').trim();
+            if (q && window.members.some(m => !EXCLUDED_STATUSES.includes(m.status) && m.name && m.name.includes(q))) return null;
+        }
+
+        const guess = inferLedgerTypeCategory(keyword);
+        if (!guess) {
+            renderSmartCategoryRecommendations(keyword);
+            return null;
+        }
+        hideSmartCategoryRecommendations();
+
+        if (typeEl.value !== guess.type) {
+            typeEl.value = guess.type;
+            setCategories();
+        }
+        if (Array.from(catEl.options).some(op => op.value === guess.cat)) {
+            catEl.value = guess.cat;
+            catEl.dataset.autoSuggested = '1';
+            catEl.style.boxShadow = '0 0 0 3px rgba(0,184,148,.13)';
+            setTimeout(() => { if (catEl.dataset.autoSuggested === '1') catEl.style.boxShadow = ''; }, 700);
+        }
+        return guess;
+    }
+
+    // 2026-09-23 9단계: 고정 즐겨찾기 대신 사용 패턴 기반 자동 추천 빠른입력
+    function quickDateAgeDays(dateStr) {
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(String(dateStr || ''))) return 9999;
+        const d = new Date(`${dateStr}T00:00:00`);
+        const nowText = (typeof formatKoreaISODate === 'function') ? formatKoreaISODate() : new Date().toISOString().slice(0,10);
+        const now = new Date(`${nowText}T00:00:00`);
+        const diff = Math.floor((now - d) / 86400000);
+        return Number.isFinite(diff) ? Math.max(0, diff) : 9999;
+    }
+
+    function buildDynamicQuickRecommendations() {
+        const rows = Array.isArray(window.trans) ? window.trans : [];
+        const groups = new Map();
+        const excludeCats = new Set(['월회비','가입비','찬조금']);
+
+        rows.forEach(t => {
+            if (!t || !['income','expense'].includes(t.type)) return;
+            const desc = String(t.desc || '').trim();
+            const cat = String(t.cat || '').trim();
+            if (!desc || !cat || excludeCats.has(cat)) return;
+            const norm = normalizeLedgerKeyword(desc);
+            if (!norm) return;
+            const key = `${t.type}|${cat}|${norm}`;
+            if (!groups.has(key)) groups.set(key, {
+                type:t.type, cat, desc, count:0, score:0, latestDate:'', latestAmt:0,
+                amounts:new Map(), recent30:0, recent90:0
+            });
+            const g = groups.get(key);
+            const age = quickDateAgeDays(t.date);
+            g.count += 1;
+            if (age <= 30) { g.score += 8; g.recent30 += 1; }
+            else if (age <= 90) { g.score += 4; g.recent90 += 1; }
+            else g.score += 1;
+            if (age <= 7) g.score += 10;
+            else if (age <= 30) g.score += 6;
+            else if (age <= 90) g.score += 3;
+            const amt = Number(t.amt || 0);
+            if (amt > 0) g.amounts.set(amt, (g.amounts.get(amt) || 0) + 1);
+            if (!g.latestDate || String(t.date || '') > g.latestDate || (String(t.date || '') === g.latestDate && Number(t.id||0) > Number(g.latestId||0))) {
+                g.latestDate = String(t.date || '');
+                g.latestAmt = amt;
+                g.latestId = Number(t.id || 0);
+                g.desc = desc;
+            }
+        });
+
+        let list = Array.from(groups.values());
+        list.forEach(g => {
+            let modeAmt = 0, modeCount = 0;
+            for (const [amt,cnt] of g.amounts.entries()) {
+                if (cnt > modeCount || (cnt === modeCount && amt === g.latestAmt)) { modeAmt = amt; modeCount = cnt; }
+            }
+            g.stableAmount = g.count >= 2 && modeCount / g.count >= 0.67 ? modeAmt : 0;
+            g.score += Math.min(g.count, 10) * 2;
+        });
+        list.sort((a,b) => b.score - a.score || String(b.latestDate).localeCompare(String(a.latestDate)) || b.count-a.count);
+
+        // 누적 사용이 생긴 뒤 자동 추천이 의미 있으므로 2회 이상을 우선하고,
+        // 후보가 부족할 때만 최근 1회 사용 항목으로 채운다.
+        const repeated = list.filter(x => x.count >= 2);
+        const singles = list.filter(x => x.count < 2);
+        return repeated.concat(singles).slice(0,5);
+    }
+
+    window.renderDynamicQuickRecommendations = () => {
+        const box = document.getElementById('dynamicQuickBox');
+        const chips = document.getElementById('dynamicQuickChips');
+        if (!box || !chips) return;
+        const list = buildDynamicQuickRecommendations();
+        if (!list.length) {
+            box.style.display = 'none';
+            chips.innerHTML = '';
+            return;
+        }
+        box.style.display = '';
+        chips.innerHTML = list.map((x,i) => {
+            const typeLabel = x.type === 'income' ? '수입' : '지출';
+            const amountText = x.stableAmount
+                ? `${Number(x.stableAmount).toLocaleString()}원 자동`
+                : (x.latestAmt ? `최근 ${Number(x.latestAmt).toLocaleString()}원 · 금액확인` : '금액 직접입력');
+            return `<button type="button" class="dynamic-quick-chip ${x.type}" data-type="${escapeHtmlText(x.type)}" data-cat="${escapeHtmlText(x.cat)}" data-desc="${escapeHtmlText(x.desc)}" data-amt="${x.stableAmount || 0}" onclick="applyDynamicQuickRecommendation(this)">
+                <span class="dq-main">${i===0?'⭐ ':''}${escapeHtmlText(x.desc)}</span>
+                <span class="dq-meta">${typeLabel} · ${escapeHtmlText(x.cat)} · ${x.count}회 · ${amountText}</span>
+            </button>`;
+        }).join('');
+    };
+
+    window.applyDynamicQuickRecommendation = (el) => {
+        if (!el) return;
+        const type = el.dataset.type || '';
+        const cat = el.dataset.cat || '';
+        const desc = el.dataset.desc || '';
+        const amt = Number(el.dataset.amt || 0);
+        const typeEl = document.getElementById('tType');
+        const catEl = document.getElementById('tCat');
+        const descEl = document.getElementById('tDesc');
+        const amtEl = document.getElementById('tAmt');
+        if (!typeEl || !catEl || !descEl || !amtEl) return;
+
+        if (typeEl.value !== type) {
+            typeEl.value = type;
+            setCategories();
+        }
+        if (Array.from(catEl.options).some(op => op.value === cat)) catEl.value = cat;
+        descEl.value = desc;
+        if (amt > 0) amtEl.value = amt;
+        else amtEl.value = '';
+        hideSmartCategoryRecommendations();
+        document.getElementById('acList').classList.remove('show');
+        if (amt > 0) descEl.focus();
+        else amtEl.focus();
+    };
+
+    // 2026-09-23 3단계: 내용 입력창을 누르면 현재 수입/지출의 최근 사용 항목 5개 표시
+    function buildRecentLedgerHistorySuggestions(type) {
+        const rows = Array.isArray(window.trans) ? window.trans : [];
+        const sorted = rows
+            .filter(t => t && t.type === type && String(t.desc || '').trim())
+            .slice()
+            .sort((a,b) => {
+                const ad = Number(String(a.date || '').replace(/-/g,'')) || 0;
+                const bd = Number(String(b.date || '').replace(/-/g,'')) || 0;
+                if (bd !== ad) return bd - ad;
+                return Number(b.id || 0) - Number(a.id || 0);
+            });
+
+        const seen = new Set();
+        const result = [];
+        for (const t of sorted) {
+            const desc = String(t.desc || '').trim();
+            const amt = Number(t.amt || 0);
+            const cat = String(t.cat || '');
+            const key = `${normalizeLedgerKeyword(desc)}|${amt}|${cat}`;
+            if (!desc || seen.has(key)) continue;
+            seen.add(key);
+            result.push({ desc, amt, cat, type, date:t.date || '', count:1 });
+            if (result.length >= 5) break;
+        }
+        return result;
+    }
+
+    function ledgerHistoryItemHtml(s, type) {
+        const kindLabel = type === 'income' ? '수입' : '지출';
+        const cls = type === 'expense' ? ' autocomplete-history-expense' : '';
+        return `<div class="autocomplete-item${cls}" data-history="1"
+                    data-desc="${escapeHtmlText(s.desc)}" data-amt="${s.amt}" data-cat="${escapeHtmlText(s.cat)}"
+                    onmousedown="selectLedgerHistoryItem(this)">
+            <div style="display:flex; flex-direction:column; gap:2px; flex:1; min-width:0;">
+                <div style="display:flex; justify-content:space-between; gap:10px; align-items:center;">
+                    <span class="ac-name" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtmlText(s.desc)}</span>
+                    <span class="autocomplete-history-amount">${Number(s.amt||0).toLocaleString()}원</span>
+                </div>
+                <div class="autocomplete-history-meta">
+                    <span class="autocomplete-history-badge">${kindLabel}</span>
+                    <span class="autocomplete-history-badge">${escapeHtmlText(s.cat || '항목없음')}</span>
+                    ${s.date ? `<span>최근 ${escapeHtmlText(s.date)}</span>` : ''}
+                    ${s.count > 1 ? `<span>${s.count}회 사용</span>` : ''}
+                </div>
+            </div>
+        </div>`;
+    }
+
+    window.showRecentLedgerHistory = () => {
+        const descEl = document.getElementById('tDesc');
+        const list = document.getElementById('acList');
+        if (!descEl || !list || String(descEl.value || '').trim()) return;
+        const type = document.getElementById('tType').value;
+        const cat = document.getElementById('tCat').value;
+
+        // 회비/가입비는 이름 입력 자동완성을 우선하므로 빈칸에서 최근 장부를 띄우지 않는다.
+        if (type === 'income' && ['월회비','가입비'].includes(cat)) {
+            list.classList.remove('show');
+            return;
+        }
+
+        const suggestions = buildRecentLedgerHistorySuggestions(type);
+        if (!suggestions.length) { list.classList.remove('show'); return; }
+        acSelectedIdx = -1;
+        list.innerHTML = `<div class="autocomplete-recent-title">🕘 <b>최근 사용 ${suggestions.length}개</b> · 누르면 내용·항목·금액 자동입력</div>` +
+            suggestions.map(s => ledgerHistoryItemHtml(s, type)).join('');
+        list.classList.add('show');
+    };
+
     window.onDescInput = () => {
+        const val = document.getElementById('tDesc').value;
+        applySmartLedgerCategory(val);
         const cat = document.getElementById('tCat').value;
         const type = document.getElementById('tType').value;
-        const val = document.getElementById('tDesc').value;
         const list = document.getElementById('acList');
         acSelectedIdx = -1;
 
-        // 월회비/가입비일 때만 자동완성
-        if (type !== 'income' || !['월회비','가입비'].includes(cat)) { list.classList.remove('show'); return; }
+        // 월회비/가입비는 기존 회원 자동완성
+        if (type === 'income' && ['월회비','가입비'].includes(cat)) {
+            const filtered = window.members.filter(m =>
+                !EXCLUDED_STATUSES.includes(m.status) && m.name && m.name.includes(val.trim())
+            ).slice(0, 8);
 
-        const filtered = window.members.filter(m =>
-            !EXCLUDED_STATUSES.includes(m.status) && m.name && m.name.includes(val.trim())
-        ).slice(0, 8);
+            if (!val.trim() || filtered.length === 0) { list.classList.remove('show'); return; }
 
-        if (!val.trim() || filtered.length === 0) { list.classList.remove('show'); return; }
-
-        list.innerHTML = filtered.map((m, i) => {
-            const fee = currentFees[m.status] || 0;
-            const sums = getMemberSums(m);
-            const unpaidInfo = getUnpaidInfo(m);
-            const paidMonths = (m.paid || []).filter(Boolean).length;
-            const unpaidMonthsText = unpaidInfo.months.length > 0 ? `미납: ${unpaidInfo.months.join(', ')}` : '미납 없음';
-            const hasPhone = !!normalizePhone(m.phone);
-            const phoneBadge = hasPhone ? '' : `<span style="font-size:0.7rem; font-weight:800; color:#d63031; background:#fff0f1; border:1px solid #ffcdd2; padding:2px 8px; border-radius:999px;">📵 번호없음</span>`;
-            return `<div class="autocomplete-item" data-name="${m.name}" data-fee="${fee}" data-status="${m.status}" onmousedown="selectAcItem(this)">
-                <div style="display:flex; flex-direction:column; gap:2px; flex:1;">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span class="ac-name">${m.name}</span>
-                        <span class="ac-fee">${m.status} · 월 ${fee.toLocaleString()}원</span> ${phoneBadge}
+            list.innerHTML = filtered.map((m) => {
+                const fee = currentFees[m.status] || 0;
+                const sums = getMemberSums(m);
+                const unpaidInfo = getUnpaidInfo(m);
+                const paidMonths = (m.paid || []).filter(Boolean).length;
+                const unpaidMonthsText = unpaidInfo.months.length > 0 ? `미납: ${unpaidInfo.months.join(', ')}` : '미납 없음';
+                const hasPhone = !!normalizePhone(m.phone);
+                const phoneBadge = hasPhone ? '' : `<span style="font-size:0.7rem; font-weight:800; color:#d63031; background:#fff0f1; border:1px solid #ffcdd2; padding:2px 8px; border-radius:999px;">📵 번호없음</span>`;
+                return `<div class="autocomplete-item" data-name="${escapeHtmlText(m.name)}" data-fee="${fee}" data-status="${escapeHtmlText(m.status)}" onmousedown="selectAcItem(this)">
+                    <div style="display:flex; flex-direction:column; gap:2px; flex:1;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span class="ac-name">${escapeHtmlText(m.name)}</span>
+                            <span class="ac-fee">${escapeHtmlText(m.status)} · 월 ${fee.toLocaleString()}원</span> ${phoneBadge}
+                        </div>
+                        <div style="display:flex; justify-content:space-between; font-size:0.72rem; color:#636e72;">
+                            <span>납부 <b style="color:#0984e3;">${sums.dues.toLocaleString()}원</b> (${paidMonths}개월)</span>
+                            <span style="color:${unpaidInfo.months.length > 0 ? '#d63031' : '#00b894'};">${escapeHtmlText(unpaidMonthsText)}</span>
+                        </div>
                     </div>
-                    <div style="display:flex; justify-content:space-between; font-size:0.72rem; color:#636e72;">
-                        <span>납부 <b style="color:#0984e3;">${sums.dues.toLocaleString()}원</b> (${paidMonths}개월)</span>
-                        <span style="color:${unpaidInfo.months.length > 0 ? '#d63031' : '#00b894'};">${unpaidMonthsText}</span>
-                    </div>
-                </div>
-            </div>`;
-        }).join('');
+                </div>`;
+            }).join('');
+            list.classList.add('show');
+            return;
+        }
+
+        // 그 외 수입/지출은 기존 장부에서 내용·항목·금액 자동완성
+        const suggestions = buildLedgerHistorySuggestions(val, type);
+        if (!val.trim() || suggestions.length === 0) { list.classList.remove('show'); return; }
+
+        list.innerHTML = suggestions.map((s) => ledgerHistoryItemHtml(s, type)).join('');
         list.classList.add('show');
+    };
+
+    window.selectLedgerHistoryItem = (el) => {
+        const desc = el.dataset.desc || '';
+        const amt = Number(el.dataset.amt || 0);
+        const cat = el.dataset.cat || '';
+        const catSelect = document.getElementById('tCat');
+        document.getElementById('tDesc').value = desc;
+        if (amt > 0) document.getElementById('tAmt').value = amt;
+        if (cat && Array.from(catSelect.options).some(op => op.value === cat)) catSelect.value = cat;
+        document.getElementById('acList').classList.remove('show');
+        document.getElementById('tDesc').focus();
     };
 
     window.selectAcItem = (el) => {
@@ -2211,7 +3102,13 @@ function checkRoleMatch(memberRole, groupKey) {
         if (!items.length) return;
         if (e.key === 'ArrowDown') { acSelectedIdx = Math.min(acSelectedIdx+1, items.length-1); }
         else if (e.key === 'ArrowUp') { acSelectedIdx = Math.max(acSelectedIdx-1, 0); }
-        else if (e.key === 'Enter' && acSelectedIdx >= 0) { e.preventDefault(); items[acSelectedIdx].dispatchEvent(new MouseEvent('mousedown')); return; }
+        else if (e.key === 'Enter' && acSelectedIdx >= 0) {
+            e.preventDefault();
+            const target = items[acSelectedIdx];
+            if (target.dataset.history === '1') selectLedgerHistoryItem(target);
+            else selectAcItem(target);
+            return;
+        }
         else { return; }
         items.forEach((el,i) => el.classList.toggle('selected', i===acSelectedIdx));
     };
@@ -3963,9 +4860,32 @@ window.uploadReceipt = async () => {
             closeAuditReport();
         }
     }
-    window.renderAll = () => { renderLedger(); renderStats(); renderMembers(); renderUnpaid(); renderReceipts(); renderCalendar(); updateAdminUI(); }
+    window.renderAll = () => { renderLedger(); renderStats(); renderMembers(); renderUnpaid(); renderReceipts(); renderCalendar(); updateAdminUI(); if (typeof window.renderDynamicQuickRecommendations === 'function') window.renderDynamicQuickRecommendations(); }
     window.exportData = () => { const d={trans:window.trans, members:window.members, receipts:window.receipts, events:window.events, settings:window.settings}; const b=new Blob([JSON.stringify(d)],{type:'application/json'}); const u=URL.createObjectURL(b); const a=document.createElement('a'); a.href=u; a.download='backup.json'; a.click(); }
-    window.importData = (input) => { const f=input.files[0]; if(!f)return; const r=new FileReader(); r.onload=function(e){const d=JSON.parse(e.target.result); window.trans=d.trans||[]; window.members=d.members||[]; window.receipts=d.receipts||[]; window.events=d.events||[]; window.settings=d.settings||null; saveToFirebase(); alert('복구 완료'); location.reload();}; r.readAsText(f); }
+    window.importData = (input) => {
+        const f=input.files[0]; if(!f) return;
+        if(!confirm('백업 파일을 현재 데이터에 안전하게 병합합니다.\n기존 장부/영수증은 삭제하지 않습니다. 계속하시겠습니까?')) { input.value=''; return; }
+        const r=new FileReader();
+        r.onload=async function(e){
+            try {
+                const d=JSON.parse(e.target.result);
+                const stamp=safetyStamp();
+                const updates={};
+                (d.trans||[]).forEach(x=>{ if(x&&x.id!=null){ const id=String(x.id); updates[`${CLUB_ROOT}/transItems/${id}`]=x; updates[`${SAFETY_ROOT}/liveMirror/transItems/${id}`]=x; updates[`${CLUB_ROOT}/deletedTrans/${id}`]=null; }});
+                (d.receipts||[]).forEach(x=>{ if(x&&x.id!=null){ const id=String(x.id); updates[`${CLUB_ROOT}/receiptItems/${id}`]=x; updates[`${SAFETY_ROOT}/liveMirror/receiptItems/${id}`]=x; updates[`${CLUB_ROOT}/deletedReceipts/${id}`]=null; }});
+                if(Array.isArray(d.members)) updates[`${CLUB_ROOT}/members_acc`]=d.members;
+                if(Array.isArray(d.events)) updates[`${CLUB_ROOT}/events`]=d.events;
+                if(d.settings) updates[`${CLUB_ROOT}/settings`]=d.settings;
+                updates[`${SAFETY_ROOT}/meta/lastImport`]={at:getKoreaTimestampISO(), file:f.name, stamp};
+                await update(ref(db), updates);
+                alert('✅ 안전 병합 복구 완료');
+                location.reload();
+            } catch(err) {
+                alert('복구 실패: '+err.message);
+            } finally { input.value=''; }
+        };
+        r.readAsText(f);
+    }
 
     
     window.openEditTrans = (id) => { 
@@ -3982,9 +4902,40 @@ window.uploadReceipt = async () => {
         const type = document.getElementById('editTransType').value; const el = document.getElementById('editTransCat'); el.innerHTML=''; 
         CATS[type].forEach(c => { const op = document.createElement('option'); op.value = c; op.innerText = c; if(c === sel) op.selected = true; el.appendChild(op); }); 
     }
+    // ✅ [4단계] 기존 장부를 오늘 날짜 입력폼으로 복사
+    window.reuseTrans = (id) => {
+        if(!window.isAdmin) return alert('관리자 로그인이 필요합니다.');
+        const t = window.trans.find(x => x.id === id);
+        if(!t) return;
+
+        const dateEl = document.getElementById('tDate');
+        const typeEl = document.getElementById('tType');
+        const catEl = document.getElementById('tCat');
+        const amtEl = document.getElementById('tAmt');
+        const descEl = document.getElementById('tDesc');
+        if(!dateEl || !typeEl || !catEl || !amtEl || !descEl) return;
+
+        dateEl.value = formatKoreaISODate();
+        typeEl.value = t.type;
+        setCategories();
+        catEl.value = t.cat;
+        amtEl.value = t.amt;
+        descEl.value = t.desc || '';
+
+        // 복사 후 사용자가 확인하고 '입력 완료'를 눌러 저장하도록 자동 저장은 하지 않음
+        if (typeof hideAutocomplete === 'function') hideAutocomplete();
+        const formCard = dateEl.closest('.card');
+        if(formCard) formCard.scrollIntoView({behavior:'smooth', block:'start'});
+        setTimeout(() => {
+            descEl.focus();
+            try { descEl.setSelectionRange(descEl.value.length, descEl.value.length); } catch(e) {}
+        }, 350);
+    };
+
     window.saveTransEdit = async () => { 
         const id = Number(document.getElementById('editTransId').value); const t = window.trans.find(x => x.id === id); 
         if(t) {
+            await createRestorePoint('장부 수정 전', true);
             t.date = document.getElementById('editTransDate').value;
             t.type = document.getElementById('editTransType').value;
             t.cat = document.getElementById('editTransCat').value;
@@ -4001,11 +4952,12 @@ window.uploadReceipt = async () => {
             closeTransModal();
         }
     }
-    window.delTransFromModal = async () => { if(confirm('삭제하시겠습니까?')){ const id = Number(document.getElementById('editTransId').value); window.trans = window.trans.filter(x => x.id !== id); try { await deleteTransItem(id); } catch(e) { return alert('삭제 저장 실패: ' + e.message); } renderAll(); closeTransModal(); } }
+    window.delTransFromModal = async () => { if(confirm('삭제하시겠습니까?')){ const id = Number(document.getElementById('editTransId').value); await createRestorePoint('장부 삭제 전', true); window.trans = window.trans.filter(x => x.id !== id); try { await deleteTransItem(id); } catch(e) { return alert('삭제 저장 실패: ' + e.message); } renderAll(); closeTransModal(); } }
 // 리스트에서 쓰레기통 아이콘 클릭 시 즉시 삭제하는 함수 (추가 위치)
-    window.deleteTransDirect = (id) => {
+    window.deleteTransDirect = async (id) => {
         if(!window.isAdmin) return alert('관리자 로그인이 필요합니다.');
         if(confirm('이 내역을 정말 삭제하시겠습니까?')) {
+            await createRestorePoint('장부 삭제 전', true);
             // 선택한 ID만 제외하고 데이터 배열을 다시 만듭니다
             window.trans = window.trans.filter(x => x.id !== id);
             
@@ -4166,7 +5118,178 @@ window.uploadReceipt = async () => {
   // 강제 새로고침
   try { location.reload(true); } catch(e) { location.reload(); }
 })();
+
+
+// 2026-09-23 8단계: 월말점검 바로수정/영수증 연결
+window.openMonthEndCheck = () => {
+    if(!window.isAdmin) return alert('관리자만 사용할 수 있습니다.');
+    const modal = document.getElementById('monthEndCheckModal');
+    const ySel = document.getElementById('monthEndYear');
+    const mSel = document.getElementById('monthEndMonth');
+    if(!modal || !ySel || !mSel) return;
+
+    const now = new Date();
+    const curYear = now.getFullYear();
+    const curMonth = String(now.getMonth()+1).padStart(2,'0');
+    const years = new Set([curYear]);
+    (window.trans || []).forEach(t => {
+        const y = String(t && t.date || '').slice(0,4);
+        if(/^\d{4}$/.test(y)) years.add(Number(y));
+    });
+    ySel.innerHTML = Array.from(years).sort((a,b)=>b-a).map(y=>`<option value="${y}">${y}년</option>`).join('');
+    mSel.innerHTML = Array.from({length:12},(_,i)=>String(i+1).padStart(2,'0')).map(m=>`<option value="${m}">${Number(m)}월</option>`).join('');
+
+    // 현재 장부 월 필터가 하나만 선택돼 있으면 그 월을 우선 사용
+    let preferredMonth = curMonth;
+    if(window.selectedMonths && !window.selectedMonths.has('all') && window.selectedMonths.size === 1) {
+        preferredMonth = Array.from(window.selectedMonths)[0];
+    }
+    ySel.value = String(curYear);
+    mSel.value = preferredMonth;
+    modal.style.display = 'flex';
+    runMonthEndCheck();
+};
+
+window.closeMonthEndCheck = () => {
+    const modal = document.getElementById('monthEndCheckModal');
+    if(modal) modal.style.display = 'none';
+};
+
+function monthEndRowHtml(t, note='', options={}) {
+    const kind = t.type === 'income' ? '수입' : '지출';
+    const desc = escapeHtmlText(String(t.desc || '(내용 없음)'));
+    const cat = escapeHtmlText(String(t.cat || '항목 없음'));
+    const id = Number(t.id)||0;
+    const noteHtml = note ? `<div class="month-end-row-sub">${escapeHtmlText(note)}</div>` : '';
+    const showReceipt = !!options.receipt && t.type === 'expense';
+    const actions = `
+        <div class="month-end-actions">
+            ${showReceipt ? `<button class="month-end-action-btn receipt" onclick="event.stopPropagation(); monthEndAddReceipt(${id})">🧾 영수증 등록</button>` : ''}
+            <button class="month-end-action-btn edit" onclick="event.stopPropagation(); monthEndEditTrans(${id})">✏️ 장부 수정</button>
+        </div>`;
+    return `<div class="month-end-row" onclick="jumpToMonthEndLedger(${id})">
+        <div class="month-end-row-main"><span>${escapeHtmlText(String(t.date||''))} · ${kind}/${cat}</span><span>${Number(t.amt||0).toLocaleString()}원</span></div>
+        <div class="month-end-row-sub">${desc}</div>${noteHtml}${actions}
+    </div>`;
+}
+
+function monthEndDuplicateRecords(rows) {
+    const suspects = new Map();
+    for(let i=0;i<rows.length;i++) {
+        for(let j=i+1;j<rows.length;j++) {
+            const a=rows[i], b=rows[j];
+            if(String(a.date||'') !== String(b.date||'')) continue;
+            if(String(a.type||'') !== String(b.type||'')) continue;
+            if(Number(a.amt||0) !== Number(b.amt||0)) continue;
+            const score = duplicateTextScore(a.desc,b.desc);
+            const sameCat = String(a.cat||'') === String(b.cat||'');
+            if(score >= .64 || (sameCat && score >= .5) || normalizeDuplicateText(a.desc) === normalizeDuplicateText(b.desc)) {
+                suspects.set(String(a.id), {t:a, note:`중복 의심: ${b.desc || '(내용없음)'}`});
+                suspects.set(String(b.id), {t:b, note:`중복 의심: ${a.desc || '(내용없음)'}`});
+            }
+        }
+    }
+    return Array.from(suspects.values());
+}
+
+window.runMonthEndCheck = () => {
+    if(!window.isAdmin) return;
+    const y = document.getElementById('monthEndYear')?.value;
+    const m = document.getElementById('monthEndMonth')?.value;
+    const result = document.getElementById('monthEndCheckResult');
+    if(!result || !y || !m) return;
+    const prefix = `${y}-${m}`;
+    const rows = (window.trans || []).filter(t => String(t.date||'').startsWith(prefix));
+    const receiptMissing = rows.filter(t => t.type === 'expense' && !getReceiptForTransaction(t.id));
+    const emptyDesc = rows.filter(t => !String(t.desc||'').trim());
+    const invalidAmount = rows.filter(t => !Number(t.amt||0) || Number(t.amt||0) < 0);
+    const dupRows = monthEndDuplicateRecords(rows);
+
+    const issueIds = new Set([
+        ...receiptMissing.map(x=>String(x.id)),
+        ...emptyDesc.map(x=>String(x.id)),
+        ...invalidAmount.map(x=>String(x.id)),
+        ...dupRows.map(x=>String(x.t.id))
+    ]);
+    const totalInc = rows.filter(t=>t.type==='income').reduce((a,t)=>a+Number(t.amt||0),0);
+    const totalExp = rows.filter(t=>t.type==='expense').reduce((a,t)=>a+Number(t.amt||0),0);
+
+    const section = (title, arr, renderer) => `
+        <div class="month-end-section">
+            <div class="month-end-section-title"><span>${title}</span><span>${arr.length}건</span></div>
+            ${arr.length ? arr.map(renderer).join('') : '<div class="month-end-empty">✅ 이상 없음</div>'}
+        </div>`;
+
+    result.innerHTML = `
+        <div style="background:${issueIds.size?'#fff8e8':'#effff9'};border:1px solid ${issueIds.size?'#ffe0a3':'#b8f0dd'};padding:11px;border-radius:12px;margin-bottom:10px;font-weight:800;">
+            ${issueIds.size ? `⚠️ 확인이 필요한 장부 ${issueIds.size}건` : '✅ 현재 점검 항목에서 이상이 없습니다.'}
+            <div style="font-size:.72rem;font-weight:500;color:#636e72;margin-top:4px;">${y}년 ${Number(m)}월 · 전체 ${rows.length}건 · 수입 ${totalInc.toLocaleString()}원 · 지출 ${totalExp.toLocaleString()}원</div>
+        </div>
+        <div class="month-end-summary">
+            <div class="month-end-stat">🧾 영수증 미등록<b>${receiptMissing.length}</b></div>
+            <div class="month-end-stat">⚠️ 중복 의심<b>${dupRows.length}</b></div>
+            <div class="month-end-stat">📝 내용 누락<b>${emptyDesc.length}</b></div>
+            <div class="month-end-stat">💰 금액 이상<b>${invalidAmount.length}</b></div>
+        </div>
+        ${section('🧾 영수증 미등록 지출', receiptMissing, t=>monthEndRowHtml(t,'영수증이 연결되지 않았습니다.',{receipt:true}))}
+        ${section('⚠️ 중복 입력 의심', dupRows, x=>monthEndRowHtml(x.t,x.note))}
+        ${section('📝 내용 누락', emptyDesc, t=>monthEndRowHtml(t,'세부내용이 비어 있습니다.'))}
+        ${section('💰 금액 이상', invalidAmount, t=>monthEndRowHtml(t,'금액이 0원이거나 올바르지 않습니다.'))}
+    `;
+};
+
+window.monthEndEditTrans = (id) => {
+    if(!window.isAdmin) return alert('관리자만 사용할 수 있습니다.');
+    const t = (window.trans || []).find(x => String(x.id) === String(id));
+    if(!t) return alert('해당 장부를 찾을 수 없습니다.');
+    closeMonthEndCheck();
+    openEditTrans(Number(t.id));
+};
+
+window.monthEndAddReceipt = (id) => {
+    if(!window.isAdmin) return alert('관리자만 사용할 수 있습니다.');
+    const t = (window.trans || []).find(x => String(x.id) === String(id));
+    if(!t) return alert('해당 장부를 찾을 수 없습니다.');
+    if(t.type !== 'expense') return alert('지출 내역에만 영수증을 등록할 수 있습니다.');
+    closeMonthEndCheck();
+    openLinkedReceiptModal(Number(t.id));
+};
+
+window.jumpToMonthEndLedger = (id) => {
+    const t = (window.trans || []).find(x => String(x.id) === String(id));
+    if(!t) return;
+    closeMonthEndCheck();
+    window.selectedMonths = new Set(['all']);
+    window.selectedCats = new Set(['all']);
+    window.receiptStatusFilter = 'all';
+    const search = document.getElementById('ledgerSearch');
+    if(search) search.value = String(t.desc || t.amt || '');
+    const clearBtn = document.getElementById('ledgerSearchClear');
+    if(clearBtn) clearBtn.style.display = search && search.value ? 'block' : 'none';
+    window.curLedgerPage = 1;
+    createFilterChips();
+    document.querySelectorAll('#receiptStatusChips .filter-chip').forEach((b,i)=>b.classList.toggle('active',i===0));
+    renderLedger();
+    goTab('ledger');
+    setTimeout(()=>document.getElementById('ledgerSearch')?.scrollIntoView({behavior:'smooth',block:'center'}),50);
+};
+
 </script>
+
+
+<div class="modal-wrap month-end-check-modal" id="monthEndCheckModal" onclick="if(event.target===this) closeMonthEndCheck()">
+    <div class="modal">
+        <button class="modal-close-x" onclick="closeMonthEndCheck()">×</button>
+        <div style="font-size:1.2rem;font-weight:900;margin-bottom:4px;">✅ 월말 마감 점검</div>
+        <div style="font-size:.78rem;color:#636e72;line-height:1.45;">선택한 월의 장부를 저장 변경 없이 검사합니다. 문제가 있는 내역을 누르면 장부 검색으로 바로 이동합니다.</div>
+        <div class="month-end-toolbar">
+            <div><div style="font-size:.7rem;color:#888;margin-bottom:4px;">연도</div><select id="monthEndYear"></select></div>
+            <div><div style="font-size:.7rem;color:#888;margin-bottom:4px;">월</div><select id="monthEndMonth"></select></div>
+            <button class="month-end-run" onclick="runMonthEndCheck()">점검하기</button>
+        </div>
+        <div id="monthEndCheckResult"></div>
+    </div>
+</div>
 
 </body>
 </html>
