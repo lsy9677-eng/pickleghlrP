@@ -2274,6 +2274,9 @@ function duplicateTextScore(a, b) {
     return (2 * common) / Math.max(1, gx.size + gy.size);
 }
 
+window.normalizeDuplicateText = normalizeDuplicateText;
+window.duplicateTextScore = duplicateTextScore;
+
 function findPossibleDuplicateTrans(candidate) {
     const rows = Array.isArray(window.trans) ? window.trans : [];
     return rows
@@ -2660,6 +2663,8 @@ function checkRoleMatch(memberRole, groupKey) {
             .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
     }
+
+    window.escapeHtmlText = escapeHtmlText;
 
     function normalizeLedgerKeyword(v) {
         return String(v || '').toLowerCase().replace(/\s+/g, '').trim();
@@ -4208,6 +4213,8 @@ function getReceiptForTransaction(transId) {
     ) || null;
 }
 
+window.getReceiptForTransaction = getReceiptForTransaction;
+
 async function readReceiptFileAsDataURL(file) {
     if (!file) throw new Error('선택한 사진을 찾을 수 없습니다.');
 
@@ -5157,10 +5164,10 @@ window.closeMonthEndCheck = () => {
 
 function monthEndRowHtml(t, note='', options={}) {
     const kind = t.type === 'income' ? '수입' : '지출';
-    const desc = escapeHtmlText(String(t.desc || '(내용 없음)'));
-    const cat = escapeHtmlText(String(t.cat || '항목 없음'));
+    const desc = window.escapeHtmlText(String(t.desc || '(내용 없음)'));
+    const cat = window.escapeHtmlText(String(t.cat || '항목 없음'));
     const id = Number(t.id)||0;
-    const noteHtml = note ? `<div class="month-end-row-sub">${escapeHtmlText(note)}</div>` : '';
+    const noteHtml = note ? `<div class="month-end-row-sub">${window.escapeHtmlText(note)}</div>` : '';
     const showReceipt = !!options.receipt && t.type === 'expense';
     const actions = `
         <div class="month-end-actions">
@@ -5168,7 +5175,7 @@ function monthEndRowHtml(t, note='', options={}) {
             <button class="month-end-action-btn edit" onclick="event.stopPropagation(); monthEndEditTrans(${id})">✏️ 장부 수정</button>
         </div>`;
     return `<div class="month-end-row" onclick="jumpToMonthEndLedger(${id})">
-        <div class="month-end-row-main"><span>${escapeHtmlText(String(t.date||''))} · ${kind}/${cat}</span><span>${Number(t.amt||0).toLocaleString()}원</span></div>
+        <div class="month-end-row-main"><span>${window.escapeHtmlText(String(t.date||''))} · ${kind}/${cat}</span><span>${Number(t.amt||0).toLocaleString()}원</span></div>
         <div class="month-end-row-sub">${desc}</div>${noteHtml}${actions}
     </div>`;
 }
@@ -5181,9 +5188,9 @@ function monthEndDuplicateRecords(rows) {
             if(String(a.date||'') !== String(b.date||'')) continue;
             if(String(a.type||'') !== String(b.type||'')) continue;
             if(Number(a.amt||0) !== Number(b.amt||0)) continue;
-            const score = duplicateTextScore(a.desc,b.desc);
+            const score = window.duplicateTextScore(a.desc,b.desc);
             const sameCat = String(a.cat||'') === String(b.cat||'');
-            if(score >= .64 || (sameCat && score >= .5) || normalizeDuplicateText(a.desc) === normalizeDuplicateText(b.desc)) {
+            if(score >= .64 || (sameCat && score >= .5) || window.normalizeDuplicateText(a.desc) === window.normalizeDuplicateText(b.desc)) {
                 suspects.set(String(a.id), {t:a, note:`중복 의심: ${b.desc || '(내용없음)'}`});
                 suspects.set(String(b.id), {t:b, note:`중복 의심: ${a.desc || '(내용없음)'}`});
             }
@@ -5200,7 +5207,7 @@ window.runMonthEndCheck = () => {
     if(!result || !y || !m) return;
     const prefix = `${y}-${m}`;
     const rows = (window.trans || []).filter(t => String(t.date||'').startsWith(prefix));
-    const receiptMissing = rows.filter(t => t.type === 'expense' && !getReceiptForTransaction(t.id));
+    const receiptMissing = rows.filter(t => t.type === 'expense' && !window.getReceiptForTransaction(t.id));
     const emptyDesc = rows.filter(t => !String(t.desc||'').trim());
     const invalidAmount = rows.filter(t => !Number(t.amt||0) || Number(t.amt||0) < 0);
     const dupRows = monthEndDuplicateRecords(rows);
