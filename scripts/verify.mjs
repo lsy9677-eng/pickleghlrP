@@ -26,6 +26,8 @@ assert.ok(html.includes('lsytennis-default-rtdb.europe-west1.firebasedatabase.ap
 assert.ok(html.includes('const CLUB_ROOT = BASE_PATH;'));
 assert.ok(!html.includes("location.href='./match/'"));
 assert.equal((html.match(/class="nav-item(?: active)?"/g) || []).length, 5);
+assert.ok(html.includes('./finance.css?v=20261030_06'));
+assert.ok(html.includes('brand-copy">진례모던 피클볼'));
 for (const m of html.matchAll(/(?:import[^;]*?from\s*|href=)["'](\.\/[^"'?]+)(?:\?[^"']*)?["']/g)) assert.ok(fs.existsSync(m[1]), `Missing asset: ${m[1]}`);
 for (const [index,match] of [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)].entries()) {
     const result = spawnSync(process.execPath,['--check',...(match[1].includes('module')?['--input-type=module']:[])], {input:match[2],encoding:'utf8'});

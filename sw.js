@@ -1,6 +1,6 @@
 // [수정] 매번 바뀌는 시간 대신 고정된 버전을 사용하세요.
 // 업데이트가 필요할 때만 이 숫자를 변경하면 됩니다 (예: v1 -> v2)
-const CACHE_NAME = 'jinrye-pickleball-v20261030_01';
+const CACHE_NAME = 'jinrye-pickleball-v20261030_02';
 
 // 설치: 대기 없이 즉시 설치 (코드가 변경되었을 때만 수행됨)
 self.addEventListener('install', (event) => {
