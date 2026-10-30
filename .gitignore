@@ -1,0 +1,4 @@
+dist/
+.wrangler/
+firebase-debug.log
+scripts/deploy-firebase.cjs

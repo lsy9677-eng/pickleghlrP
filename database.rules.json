@@ -1,0 +1,174 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "clubs": {
+      "jinrye_modern_pickleball": {
+        "trans": {
+          ".read": true,
+          ".write": false
+        },
+        "receipts": {
+          ".read": true,
+          ".write": false
+        },
+        "members": {
+          ".read": "auth != null && ((auth != null && auth.token.email == 'canyone2@naver.com') || (auth != null && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('role').val() == 'treasurer' && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('email').val() == auth.token.email))",
+          ".write": false
+        },
+        "transItems": {
+          ".read": true,
+          "$id": {
+            ".write": "auth != null && ((auth != null && auth.token.email == 'canyone2@naver.com') || (auth != null && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('role').val() == 'treasurer' && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('email').val() == auth.token.email))"
+          }
+        },
+        "receiptItems": {
+          ".read": true,
+          "$id": {
+            ".write": "auth != null && ((auth != null && auth.token.email == 'canyone2@naver.com') || (auth != null && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('role').val() == 'treasurer' && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('email').val() == auth.token.email))"
+          }
+        },
+        "deletedTrans": {
+          ".read": true,
+          "$id": {
+            ".write": "auth != null && ((auth != null && auth.token.email == 'canyone2@naver.com') || (auth != null && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('role').val() == 'treasurer' && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('email').val() == auth.token.email))"
+          }
+        },
+        "deletedReceipts": {
+          ".read": true,
+          "$id": {
+            ".write": "auth != null && ((auth != null && auth.token.email == 'canyone2@naver.com') || (auth != null && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('role').val() == 'treasurer' && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('email').val() == auth.token.email))"
+          }
+        },
+        "members_acc": {
+          ".read": "auth != null && ((auth != null && auth.token.email == 'canyone2@naver.com') || (auth != null && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('role').val() == 'treasurer' && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('email').val() == auth.token.email))",
+          ".write": "auth != null && ((auth != null && auth.token.email == 'canyone2@naver.com') || (auth != null && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('role').val() == 'treasurer' && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('email').val() == auth.token.email))"
+        },
+        "membersPublic": {
+          ".read": true,
+          ".write": "auth != null && ((auth != null && auth.token.email == 'canyone2@naver.com') || (auth != null && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('role').val() == 'treasurer' && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('email').val() == auth.token.email))"
+        },
+        "events": {
+          ".read": true,
+          ".write": "auth != null && ((auth != null && auth.token.email == 'canyone2@naver.com') || (auth != null && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('role').val() == 'treasurer' && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('email').val() == auth.token.email))"
+        },
+        "settings": {
+          ".read": true,
+          ".write": "auth != null && ((auth != null && auth.token.email == 'canyone2@naver.com') || (auth != null && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('role').val() == 'treasurer' && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('email').val() == auth.token.email))",
+          ".validate": "!newData.hasChild('adminPwd')"
+        },
+        "auditState": {
+          ".read": true,
+          ".write": "auth != null && ((auth != null && auth.token.email == 'canyone2@naver.com') || (auth != null && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('role').val() == 'treasurer' && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('email').val() == auth.token.email))"
+        }
+      },
+      "jinrye_modern_pickleball__safety": {
+        "liveMirror": {
+          ".read": true,
+          "transItems": {
+            "$id": {
+              ".write": "auth != null && ((auth != null && auth.token.email == 'canyone2@naver.com') || (auth != null && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('role').val() == 'treasurer' && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('email').val() == auth.token.email))"
+            }
+          },
+          "receiptItems": {
+            "$id": {
+              ".write": "auth != null && ((auth != null && auth.token.email == 'canyone2@naver.com') || (auth != null && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('role').val() == 'treasurer' && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('email').val() == auth.token.email))"
+            }
+          }
+        },
+        "archive": {
+          ".read": true,
+          "transItems": {
+            "$id": {
+              "$version": {
+                ".write": "auth != null && ((auth != null && auth.token.email == 'canyone2@naver.com') || (auth != null && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('role').val() == 'treasurer' && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('email').val() == auth.token.email))"
+              }
+            }
+          },
+          "receiptItems": {
+            "$id": {
+              "$version": {
+                ".write": "auth != null && ((auth != null && auth.token.email == 'canyone2@naver.com') || (auth != null && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('role').val() == 'treasurer' && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('email').val() == auth.token.email))"
+              }
+            }
+          }
+        },
+        "restorePoints": {
+          ".read": "auth != null && ((auth != null && auth.token.email == 'canyone2@naver.com') || (auth != null && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('role').val() == 'treasurer' && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('email').val() == auth.token.email))",
+          "$pointId": {
+            ".write": "auth != null && ((auth != null && auth.token.email == 'canyone2@naver.com') || (auth != null && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('role').val() == 'treasurer' && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('email').val() == auth.token.email))"
+          }
+        },
+        "meta": {
+          "$key": {
+            ".read": "$key != 'changeHistory' || (auth != null && ((auth != null && auth.token.email == 'canyone2@naver.com') || (auth != null && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('role').val() == 'treasurer' && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('email').val() == auth.token.email)))",
+            ".write": "(auth != null && ((auth != null && auth.token.email == 'canyone2@naver.com') || (auth != null && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('role').val() == 'treasurer' && root.child('clubs/jinrye_modern_pickleball__access/roles').child(auth.uid).child('email').val() == auth.token.email))) && (($key != 'lastRestore' && $key != 'lastImport') || (auth != null && auth.token.email == 'canyone2@naver.com'))"
+          }
+        }
+      },
+      "jinrye_modern_pickleball__access": {
+        "roles": {
+          ".read": "auth != null && auth.token.email == 'canyone2@naver.com'",
+          "$uid": {
+            ".read": "auth != null && auth.uid == $uid",
+            ".write": "auth != null && auth.token.email == 'canyone2@naver.com'",
+            ".validate": "newData.hasChildren(['role','email','name','grantedAt','grantedBy'])",
+            "role": {
+              ".validate": "newData.val() == 'treasurer' || newData.val() == 'revoked'"
+            },
+            "email": {
+              ".validate": "newData.isString() && newData.val().length <= 254"
+            },
+            "name": {
+              ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 80"
+            },
+            "grantedAt": {
+              ".validate": "newData.isNumber() && newData.val() <= now"
+            },
+            "grantedBy": {
+              ".validate": "newData.val() == auth.uid"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        },
+        "requests": {
+          ".read": "auth != null && auth.token.email == 'canyone2@naver.com'",
+          "$uid": {
+            ".read": "auth != null && auth.uid == $uid",
+            ".write": "(auth != null && auth.token.email == 'canyone2@naver.com') || ((auth != null && auth.uid == $uid) && (!data.exists() || data.child('status').val() == 'pending' || data.child('status').val() == 'rejected' || data.child('status').val() == 'revoked') && newData.child('status').val() == 'pending' && newData.child('email').val() == auth.token.email && !newData.hasChild('reviewedAt') && !newData.hasChild('reviewedBy'))",
+            ".validate": "newData.hasChildren(['uid','email','name','status','requestedAt']) && newData.child('uid').val() == $uid",
+            "uid": {
+              ".validate": "newData.val() == $uid"
+            },
+            "email": {
+              ".validate": "newData.isString() && newData.val().length <= 254"
+            },
+            "name": {
+              ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 80"
+            },
+            "status": {
+              ".validate": "newData.val() == 'pending' || newData.val() == 'approved' || newData.val() == 'rejected' || newData.val() == 'revoked'"
+            },
+            "requestedRole": {
+              ".validate": "newData.val() == 'treasurer'"
+            },
+            "requestedAt": {
+              ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= now"
+            },
+            "reviewedAt": {
+              ".validate": "(auth != null && auth.token.email == 'canyone2@naver.com') && newData.isNumber() && newData.val() <= now"
+            },
+            "reviewedBy": {
+              ".validate": "(auth != null && auth.token.email == 'canyone2@naver.com') && newData.val() == auth.uid"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        }
+      }
+    }
+  }
+}
